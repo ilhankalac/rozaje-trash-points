@@ -1,15 +1,13 @@
 <template>
   <div id="app">
-    <v-container>
-       <v-row class="mb-6">
-        <v-col>
+      <v-row>
+        <v-col md="6" sm="12">
           <GeoLocation msg="Welcome to Your Vue.js App"/>
         </v-col>
-        <v-col>
+        <v-col md="6" sm="12">
           <TrashContainer />
         </v-col>
       </v-row>
-    </v-container>
   </div>
 </template>
 
@@ -33,6 +31,5 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 0;
 }
 </style>

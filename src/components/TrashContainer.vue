@@ -1,6 +1,9 @@
 <template>
-  <div>
-      <h1>Trash container</h1>
+  <div class="container">
+    <h2>Trashing content</h2>
+     <v-text-field label="Naziv mjesta"></v-text-field>
+     <v-text-field label="Datum"></v-text-field>
+     <v-text-field label="Deponija"></v-text-field>
   </div>
 </template>
 
@@ -9,4 +12,7 @@ export default {};
 </script>
 
 <style>
+.container {
+    height: 100%;
+}
 </style>
