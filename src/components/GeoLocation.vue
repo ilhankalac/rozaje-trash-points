@@ -2,14 +2,16 @@
 <div style="margin-">
   <l-map style="height: 900px; width:100%;" :zoom="zoom" :center="center" @click="addMarker">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-    <l-marker v-for="item in markerLatLng" :lat-lng="item" :key="item.key"></l-marker>
+    <l-marker v-for="item in markerLatLng" :lat-lng="item" :key="item.key">
+        <l-popup>Test</l-popup>
+    </l-marker>
   </l-map>
   <button @click="test()"></button>
 </div>
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -29,6 +31,7 @@ export default {
         LMap,
         LTileLayer,
         LMarker,
+        LPopup,
     },
     data() {
         return {
