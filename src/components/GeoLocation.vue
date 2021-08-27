@@ -1,8 +1,8 @@
 <template>
 <div style="margin-">
-  <l-map style="height: 900px; width:100%;" :zoom="zoom" :center="center">
+  <l-map style="height: 900px; width:100%;" :zoom="zoom" :center="center" @click="addMarker">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-    <l-marker :lat-lng="markerLatLng"></l-marker>
+    <l-marker v-for="item in markerLatLng" :lat-lng="item" :key="item.key"></l-marker>
   </l-map>
   <button @click="test()"></button>
 </div>
@@ -37,7 +37,10 @@ export default {
                 '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             zoom: 13,
             center: [51.505, -0.159],
-            markerLatLng: [51.504, -0.159],
+            markerLatLng: [
+                [42.8415336, 20.1760091],
+                [42.841, 20.18],
+            ],
             location: null,
             gettingLocation: false,
             errorStr: null,
@@ -59,7 +62,11 @@ export default {
                 );
             });
         },
+        addMarker(event) {
+            this.markerLatLng.push(event.latlng);
+        },
     },
+
     async created() {
         this.gettingLocation = true;
         try {
@@ -69,10 +76,11 @@ export default {
                 this.location.coords.latitude,
                 this.location.coords.longitude,
             ];
-            this.markerLatLng = [
-                this.location.coords.latitude,
-                this.location.coords.longitude,
-            ];
+            // The center mark when the app starts
+            // this.markerLatLng = [
+            //     this.location.coords.latitude,
+            //     this.location.coords.longitude,
+            // ];
         } catch (e) {
             this.gettingLocation = false;
             this.errorStr = e.message;
