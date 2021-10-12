@@ -1,26 +1,28 @@
 <template>
-  <div id="app">
-      <v-row>
-        <v-col md="6" sm="12">
-          <GeoLocation msg="Welcome to Your Vue.js App"/>
-        </v-col>
-        <v-col md="6" sm="12">
-          <TrashContainer />
-        </v-col>
-      </v-row>
-  </div>
+  <v-app id="app">
+    <div>
+        <v-row>
+          <v-col md="6" sm="12">
+            <GeoLocation :openDialog="openDialog" msg="Welcome to Your Vue.js App"/>
+          </v-col>
+        </v-row>
+    </div>
+  </v-app>
 </template>
 
 <script>
 import GeoLocation from "./components/GeoLocation.vue";
-import TrashContainer from "./components/TrashContainer.vue";
 
 export default {
     name: "App",
     components: {
         GeoLocation,
-        TrashContainer,
     },
+    methods:{
+      openDialog(){
+        this.dialog = true;
+      }
+    }
 };
 </script>
 

@@ -1,12 +1,14 @@
 <template>
-<div style="margin-">
-  <l-map style="height: 900px; width:100%;" :zoom="zoom" :center="center" @click="addMarker">
+<div>
+  <l-map style="height: 900px; width:100%; z-index:1;" :zoom="zoom" :center="center" @click="addMarker">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
     <l-marker v-for="item in markerLatLng" :lat-lng="item" :key="item.key">
         <l-popup>Test</l-popup>
     </l-marker>
   </l-map>
-  <button @click="test()"></button>
+  <v-dialog v-model="dialog" width="500px">
+    <TrashContainer />
+  </v-dialog>
 </div>
 </template>
 
@@ -15,6 +17,7 @@ import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
+import TrashContainer from "./TrashContainer.vue";
 
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
@@ -32,6 +35,7 @@ export default {
         LTileLayer,
         LMarker,
         LPopup,
+        TrashContainer
     },
     data() {
         return {
@@ -47,6 +51,7 @@ export default {
             location: null,
             gettingLocation: false,
             errorStr: null,
+            dialog: false,
         };
     },
     methods: {
@@ -67,6 +72,7 @@ export default {
         },
         addMarker(event) {
             this.markerLatLng.push(event.latlng);
+            this.dialog = true;
         },
     },
 
