@@ -18,7 +18,7 @@ import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import TrashContainer from "./TrashContainer.vue";
-
+import firebase from 'firebase'
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
 
@@ -27,6 +27,7 @@ Icon.Default.mergeOptions({
     iconUrl: require("leaflet/dist/images/marker-icon.png"),
     shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
+
 
 export default {
     name: "GeoLocation",
@@ -52,6 +53,7 @@ export default {
             gettingLocation: false,
             errorStr: null,
             dialog: false,
+            database: firebase.database()
         };
     },
     methods: {
@@ -73,6 +75,7 @@ export default {
         addMarker(event) {
             this.markerLatLng.push(event.latlng);
             this.dialog = true;
+            this.database.ref("names").push({kurcina1: "velika"})
         },
     },
 
