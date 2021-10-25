@@ -75,7 +75,7 @@ export default {
         addMarker(event) {
             this.markerLatLng.push(event.latlng);
             this.dialog = true;
-            this.database.ref("names").push({kurcina1: "velika"})
+            this.database.ref("names").push({test: "velika"})
         },
     },
 
