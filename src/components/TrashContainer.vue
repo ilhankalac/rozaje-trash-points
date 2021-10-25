@@ -1,12 +1,35 @@
 <template>
   <v-card style="padding:5%">
-    <h2>Trashing content</h2>
-    <v-text-field label="Naziv mjesta"></v-text-field>
-    <v-text-field label="Datum"></v-text-field>
-    <v-text-field label="Deponija"></v-text-field>
+    <h2>Unesi informacije o deponiji</h2>
+    <v-text-field label="Naziv mjesta" v-model="trash.placeName"/>
+    <v-text-field label="Datum" v-model="trash.date"/>
+    <v-text-field label="Detaljan opis" v-model="trash.description"/>
+    <v-btn @click="save()">Sačuvaj</v-btn>
   </v-card>
 </template>
 
 <script>
-export default {};
+import firebase from 'firebase'
+
+export default {
+  props:[
+    "coords",
+  ],
+  data() {
+    return {
+      trash:{
+        placeName: "",
+        date: "",
+        description: "",
+      },
+      database: firebase.database()
+  };
+  },
+  methods:{
+    save(){
+      this.trash["coords"] = { latitude: this.coords.lat, longitude: this.coords.lng }
+      this.database.ref("landfillPoints").push(this.trash)
+    }
+  }
+};
 </script>

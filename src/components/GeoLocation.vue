@@ -7,7 +7,7 @@
     </l-marker>
   </l-map>
   <v-dialog v-model="dialog" width="500px">
-    <TrashContainer />
+    <TrashContainer :coords="markerLatLng[markerLatLng.length - 1]"/>
   </v-dialog>
 </div>
 </template>
@@ -18,7 +18,6 @@ import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import TrashContainer from "./TrashContainer.vue";
-import firebase from 'firebase'
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
 
@@ -46,14 +45,12 @@ export default {
             zoom: 13,
             center: [51.505, -0.159],
             markerLatLng: [
-                [42.8415336, 20.1760091],
-                [42.841, 20.18],
+
             ],
             location: null,
             gettingLocation: false,
             errorStr: null,
             dialog: false,
-            database: firebase.database()
         };
     },
     methods: {
@@ -75,7 +72,6 @@ export default {
         addMarker(event) {
             this.markerLatLng.push(event.latlng);
             this.dialog = true;
-            this.database.ref("names").push({test: "velika"})
         },
     },
 
