@@ -27,6 +27,7 @@ export default {
   methods:{
     save(){
       this.$emit("saveData", this.trash)
+      this.trash = {};
     }
   }
 };

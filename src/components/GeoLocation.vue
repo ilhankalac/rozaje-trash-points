@@ -3,7 +3,7 @@
   <l-map style="height: 900px; width:100%; z-index:1;" :zoom="zoom" :center="center" @click="addMarker">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
     <l-marker v-for="item in markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
-        <l-popup>Test</l-popup>
+        <l-popup>{{item.placeName}} - {{item.date}}</l-popup>
     </l-marker>
   </l-map>
   <v-dialog v-model="dialog" width="500px">
