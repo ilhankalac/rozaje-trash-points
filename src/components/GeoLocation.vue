@@ -2,13 +2,14 @@
 <div>
   <l-map style="height: 900px; width:100%; z-index:1;" :zoom="zoom" :center="center" @click="addMarker">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-    <l-marker v-for="item in markerLatLng" :lat-lng="item" :key="item.key">
+    <l-marker v-for="item in markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
         <l-popup>Test</l-popup>
     </l-marker>
   </l-map>
   <v-dialog v-model="dialog" width="500px">
     <TrashContainer :coords="markerLatLng[markerLatLng.length - 1]"/>
   </v-dialog>
+  <p v-for="item in markerLatLng" :key="item.key">{{item}}</p>
 </div>
 </template>
 
@@ -28,6 +29,7 @@ Icon.Default.mergeOptions({
 });
 
 import firebase from 'firebase'
+import { landfillPointsRef } from '../firebase/firebase';
 
 export default {
     name: "GeoLocation",
@@ -55,6 +57,9 @@ export default {
             landFillsRef: firebase.database().ref("landfillPoints")
         };
     },
+    firebase:{
+        markerLatLng: landfillPointsRef 
+    },
     methods: {
         async getLocation() {
             return new Promise((resolve, reject) => {
@@ -72,6 +77,7 @@ export default {
             });
         },
         addMarker(event) {
+            console.log(this.markerLatLng);
             this.markerLatLng.push(event.latlng);
             this.dialog = true;
         },
