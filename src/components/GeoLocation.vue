@@ -43,8 +43,7 @@ export default {
     data() {
         return {
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            attribution:
-                '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             zoom: 13,
             center: [51.505, -0.159],
             markerLatLng: [
@@ -54,7 +53,6 @@ export default {
             gettingLocation: false,
             errorStr: null,
             dialog: false,
-            landFillsRef: firebase.database().ref("landfillPoints")
         };
     },
     firebase:{
@@ -87,7 +85,6 @@ export default {
                 }
             }
             landfillPointsRef.push(trash)
-            // this.dialog = true;
         },
     },
 
@@ -97,15 +94,11 @@ export default {
             // this.getLandFills()
             this.gettingLocation = false;
             this.location = await this.getLocation();
+            // Centering the map in current location, this will be changed to Rozaje center
             this.center = [
                 this.location.coords.latitude,
                 this.location.coords.longitude,
             ];
-            // The center mark when the app starts
-            // this.markerLatLng = [
-            //     this.location.coords.latitude,
-            //     this.location.coords.longitude,
-            // ];
         } catch (e) {
             this.gettingLocation = false;
             this.errorStr = e.message;
