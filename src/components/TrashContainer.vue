@@ -11,6 +11,8 @@
 <script>
 import firebase from 'firebase'
 
+import { landfillPointsRef } from "../firebase/firebase"
+
 export default {
   props:[
     "coords",
@@ -28,7 +30,7 @@ export default {
   methods:{
     save(){
       this.trash["coords"] = { latitude: this.coords.lat, longitude: this.coords.lng }
-      this.database.ref("landfillPoints").push(this.trash)
+      landfillPointsRef.push(this.trash)
     }
   }
 };

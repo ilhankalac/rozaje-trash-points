@@ -75,23 +75,23 @@ export default {
             this.markerLatLng.push(event.latlng);
             this.dialog = true;
         },
-        getLandFills(){
-            this.landFillsRef.on('value', (snapshot) => {
-                    for(const data in snapshot.val()){
-                        const coords = snapshot.val()[data].coords;
-                        this.markerLatLng.push({ lat: coords.latitude, lng: coords.longitude });
-                    }
-                }, (errorObject) => {
-                    console.log('The read failed: ' + errorObject.name);
-            }); 
+        // getLandFills(){
+        //     this.landFillsRef.on('value', (snapshot) => {
+        //             for(const data in snapshot.val()){
+        //                 const coords = snapshot.val()[data].coords;
+        //                 this.markerLatLng.push({ lat: coords.latitude, lng: coords.longitude });
+        //             }
+        //         }, (errorObject) => {
+        //             console.log('The read failed: ' + errorObject.name);
+        //     }); 
 
-        }
+        // }
     },
 
     async created() {
         this.gettingLocation = true;
         try {
-            this.getLandFills()
+            // this.getLandFills()
             this.gettingLocation = false;
             this.location = await this.getLocation();
             this.center = [
