@@ -7,7 +7,7 @@
     </l-marker>
   </l-map>
   <v-dialog v-model="dialog" width="500px">
-    <TrashContainer :coords="markerLatLng[markerLatLng.length - 1]"/>
+    <TrashContainer @saveData="saveData($event)"/>
   </v-dialog>
   <p v-for="item in markerLatLng" :key="item.key">{{item}}</p>
 </div>
@@ -53,6 +53,7 @@ export default {
             gettingLocation: false,
             errorStr: null,
             dialog: false,
+            selectedCoords: []
         };
     },
     firebase:{
@@ -75,17 +76,18 @@ export default {
             });
         },
         addMarker(event) {
-            const trash = { 
-                placeName: "",
-                date: "",
-                description: "", 
-                coords:{
-                    latitude: event.latlng.lat, 
-                    longitude: event.latlng.lng
-                }
+            this.selectedCoords = {
+                latitude: event.latlng.lat, 
+                longitude: event.latlng.lng
             }
-            landfillPointsRef.push(trash)
+
+            this.dialog = true;
         },
+        saveData(data){
+            data["coords"] = this.selectedCoords;
+            landfillPointsRef.push(data);
+            this.dialog = false;
+        }
     },
 
     async created() {

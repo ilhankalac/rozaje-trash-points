@@ -9,9 +9,7 @@
 </template>
 
 <script>
-import firebase from 'firebase'
 
-import { landfillPointsRef } from "../firebase/firebase"
 
 export default {
   props:[
@@ -24,13 +22,11 @@ export default {
         date: "",
         description: "",
       },
-      database: firebase.database()
   };
   },
   methods:{
     save(){
-      this.trash["coords"] = { latitude: this.coords.lat, longitude: this.coords.lng }
-      landfillPointsRef.push(this.trash)
+      this.$emit("saveData", this.trash)
     }
   }
 };
