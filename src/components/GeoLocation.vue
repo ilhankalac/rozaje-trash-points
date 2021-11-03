@@ -77,21 +77,18 @@ export default {
             });
         },
         addMarker(event) {
-            console.log(this.markerLatLng);
-            this.markerLatLng.push(event.latlng);
-            this.dialog = true;
+            const trash = { 
+                placeName: "",
+                date: "",
+                description: "", 
+                coords:{
+                    latitude: event.latlng.lat, 
+                    longitude: event.latlng.lng
+                }
+            }
+            landfillPointsRef.push(trash)
+            // this.dialog = true;
         },
-        // getLandFills(){
-        //     this.landFillsRef.on('value', (snapshot) => {
-        //             for(const data in snapshot.val()){
-        //                 const coords = snapshot.val()[data].coords;
-        //                 this.markerLatLng.push({ lat: coords.latitude, lng: coords.longitude });
-        //             }
-        //         }, (errorObject) => {
-        //             console.log('The read failed: ' + errorObject.name);
-        //     }); 
-
-        // }
     },
 
     async created() {
