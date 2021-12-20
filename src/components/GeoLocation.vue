@@ -3,7 +3,12 @@
   <l-map style="height: 900px; width:100%; z-index:1;" :zoom="zoom" :center="center" @click="addMarker">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
     <l-marker v-for="item in markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
-        <l-popup>{{item.placeName}} - {{item.date}}</l-popup>
+        <l-popup>
+            <div>
+                <h3>{{item.placeName}} - {{item.date}}</h3>
+                <img style="max-width: 200px; text-align:center" :src="item.post.photo" alt="Italian Trulli">
+            </div>
+        </l-popup>
     </l-marker>
   </l-map>
   <v-dialog v-model="dialog" width="500px">
