@@ -5,6 +5,9 @@
           <v-col md="6" sm="12">
             <GeoLocation :openDialog="openDialog" msg="Welcome to Your Vue.js App"/>
           </v-col>
+          <v-col>
+            <ListOfPoints style="max-width: 100%"></ListOfPoints>
+          </v-col>
         </v-row>
     </div>
   </v-app>
@@ -12,11 +15,14 @@
 
 <script>
 import GeoLocation from "./components/GeoLocation.vue";
+import ListOfPoints from "./components/ListOfPoints.vue";
+
 
 export default {
     name: "App",
     components: {
         GeoLocation,
+        ListOfPoints
     },
     methods:{
       openDialog(){

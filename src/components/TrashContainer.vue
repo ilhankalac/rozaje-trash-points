@@ -1,13 +1,6 @@
 <template>
   <v-card style="padding:5%">
     <h2>Unesi informacije o deponiji</h2>
-
-    <div v-if="imageData != null">
-      <img class="preview" height="268" width="356" :src="img1" />
-    </div>
-    <v-text-field label="Naziv mjesta" v-model="trash.placeName" />
-    <v-text-field label="Datum" v-model="trash.date" />
-    <v-text-field label="Detaljan opis" v-model="trash.description" />
     <div>
       <v-btn @click="click1">Choose photo</v-btn>
       <input
@@ -19,6 +12,13 @@
       />
     </div>
     <br />
+    <div v-if="imageData != null">
+      <img class="preview" height="268" width="356" :src="img1" />
+    </div>
+    <v-text-field label="Naziv mjesta" v-model="trash.placeName" />
+    <v-text-field label="Datum" v-model="trash.date" />
+    <v-text-field label="Detaljan opis" v-model="trash.description" />
+  
     <v-btn color="pink" :disabled="!img1" @click="create">Save</v-btn>
   </v-card>
 </template>
@@ -48,6 +48,8 @@ export default {
       this.trash.post = post;
       this.$emit("saveData", this.trash);
       this.trash = {};
+      this.img1 = "";
+      this.imageData = null;
     },
     click1() {
       this.$refs.input1.click();
