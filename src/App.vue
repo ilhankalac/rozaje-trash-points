@@ -42,6 +42,7 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
+    
 }
 .topnav {
   background-color: #486684;
@@ -58,4 +59,8 @@ export default {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+body::-webkit-scrollbar {
+  display: none;
+}
+
 </style>

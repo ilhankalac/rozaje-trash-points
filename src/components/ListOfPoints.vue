@@ -26,17 +26,31 @@ export default {
 <style>
 .container{
     overflow:scroll;
+    overflow-x: hidden;
     max-height:94vh;
     background-color:#2c3e50;
-    color:#e6e6e6
+    color:#e6e6e6;
 }
 ::-webkit-scrollbar {
-    width: 0;  /* Remove scrollbar space */
-    background: transparent;  /* Optional: just make scrollbar invisible */
+  width: 12px;
 }
-/* Optional: show position indicator in red */
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #2c3e50; 
+}
+ 
+/* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #FF0000;
+  background: #1b2631; 
 }
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+/* Optional: show position indicator in red */
+
 
 </style>
