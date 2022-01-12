@@ -4,8 +4,8 @@
       <div class="topnav">
         <h2 class="topNavH">Lokalizovanje deponija Rožajske teritorije</h2>
       </div>
-        <v-row>
-          <v-col md="6" sm="12">
+        <v-row style="background-color:#2c3e50">
+          <v-col md="8" sm="12">
             <GeoLocation :openDialog="openDialog" msg="Welcome to Your Vue.js App"/>
           </v-col>
           <v-col>
@@ -44,7 +44,7 @@ export default {
     color: #2c3e50;
 }
 .topnav {
-  background-color: #333;
+  background-color: #486684;
   overflow: hidden;
   height: 80px;
   position: relative;
