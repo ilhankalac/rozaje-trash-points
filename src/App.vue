@@ -5,10 +5,10 @@
         <h2 class="topNavH">Lokalizovanje deponija Rožajske teritorije</h2>
       </div>
         <v-row style="background-color:#2c3e50">
-          <v-col md="8" sm="12">
+          <v-col md="8" cols="12" xs="12">
             <GeoLocation :openDialog="openDialog" msg="Welcome to Your Vue.js App"/>
           </v-col>
-          <v-col>
+          <v-col >
             <ListOfPoints style="max-width: 100%"></ListOfPoints>
           </v-col>
         </v-row>
