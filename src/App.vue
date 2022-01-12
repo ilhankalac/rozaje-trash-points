@@ -1,6 +1,9 @@
 <template>
   <v-app id="app">
     <div>
+      <div class="topnav">
+        <h2 class="topNavH">Lokalizovanje deponija Rožajske teritorije</h2>
+      </div>
         <v-row>
           <v-col md="6" sm="12">
             <GeoLocation :openDialog="openDialog" msg="Welcome to Your Vue.js App"/>
@@ -39,5 +42,20 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
+}
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+  height: 80px;
+  position: relative;
+}
+.topNavH{
+  color:white;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 </style>

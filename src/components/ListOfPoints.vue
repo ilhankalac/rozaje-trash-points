@@ -1,7 +1,9 @@
 <template>
     <div>
-        <v-timeline>
-            <v-timeline-item v-for="item in markerLatLng" :key="item.key">{{item.placeName}} - {{item.date}}</v-timeline-item>
+        <v-timeline dense>
+            <v-timeline-item v-for="item in markerLatLng" :key="item.key">
+                <h2 style="text-align:left">{{item.placeName}} ({{item.date}})</h2>
+            </v-timeline-item>
         </v-timeline>
     </div>
 </template>
