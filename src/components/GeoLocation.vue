@@ -1,7 +1,7 @@
 <template>
 <div>
     <div>
-        <l-map style="height: 1000px; width:100%; z-index:1;" :zoom="zoom" :center="center" @click="addMarker">
+        <l-map class="leaflet-canvas" :zoom="zoom" :center="center" @click="addMarker">
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-marker v-for="item in markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
                 <l-popup>
@@ -53,8 +53,8 @@ export default {
         return {
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            zoom: 13,
-            center: [51.505, -0.159],
+            zoom: 14,
+            center: [42.842649, 20.166717],
             markerLatLng: [
 
             ],
@@ -104,11 +104,14 @@ export default {
         try {
             // this.getLandFills()
             this.gettingLocation = false;
-            this.location = await this.getLocation();
+            // this.location = await this.getLocation();
             // Centering the map in current location, this will be changed to Rozaje center
             this.center = [
-                this.location.coords.latitude,
-                this.location.coords.longitude,
+                // this.location.coords.latitude,
+                // this.location.coords.longitude,
+
+                // Coordinates of Rozaje
+                42.842649, 20.166717
             ];
         } catch (e) {
             this.gettingLocation = false;
@@ -118,3 +121,13 @@ export default {
     
 };
 </script>
+<style scoped>
+.leaflet-canvas{
+    height: 900px; 
+    margin-top:30px;
+    width:100%;
+    z-index:1;
+    padding-left:10px;
+    border-radius: 5px;
+}
+</style>
