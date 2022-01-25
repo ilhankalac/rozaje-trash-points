@@ -18,6 +18,7 @@
     <v-text-field label="Naziv mjesta" v-model="trash.placeName" />
     <v-text-field label="Datum" v-model="trash.date" />
     <v-text-field label="Detaljan opis" v-model="trash.description" />
+    <v-checkbox label="Očišćen?" v-model="trash.isCleaned" />
   
     <v-btn color="pink" :disabled="!img1" @click="create">Save</v-btn>
   </v-card>
@@ -35,6 +36,7 @@ export default {
         placeName: "",
         date: "",
         description: "",
+        isCleaned: false
       },
     };
   },

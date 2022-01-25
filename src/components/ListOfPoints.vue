@@ -2,7 +2,11 @@
     <div class="container">
         <h2>Akcije</h2>
         <v-timeline dense>
-            <v-timeline-item v-for="item in markerLatLng" :key="item.key">
+            <v-timeline-item 
+              v-for="item in markerLatLng"
+              :key="item.key"
+              :color="item.isCleaned ? 'green' : 'red'"
+            >
                 <h3 style="text-align:left">{{item.placeName.toUpperCase()}} ({{item.date}})</h3>
             </v-timeline-item>
         </v-timeline>
