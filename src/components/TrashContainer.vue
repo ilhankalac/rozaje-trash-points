@@ -48,6 +48,9 @@ export default {
       };
 
       this.trash.post = post;
+
+      this.trash.isCleaned ? this.trash.markerColor = "green" : this.trash.markerColor = "red";
+
       this.$emit("saveData", this.trash);
       this.trash = {};
       this.img1 = "";

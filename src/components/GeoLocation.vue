@@ -10,6 +10,9 @@
                         <img style="max-width: 200px; text-align:center" :src="item.post.photo" alt="Italian Trulli">
                     </div>
                 </l-popup>
+                <l-icon
+                    :icon-url="`https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${item.markerColor}.png`"
+                />
             </l-marker>
         </l-map>
         <v-dialog v-model="dialog" width="500px">
@@ -17,7 +20,6 @@
         </v-dialog>
         <!-- <p v-for="item in markerLatLng" :key="item.key">{{item}}</p> -->
     </div>
-
     
 </div>
 </template>
@@ -31,15 +33,14 @@ import TrashContainer from "./TrashContainer.vue";
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
 
-Icon.Default.mergeOptions({
-    iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-    iconUrl: require("leaflet/dist/images/marker-icon.png"),
-    shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-});
+
+
+
+
 
 import firebase from 'firebase'
 import { landfillPointsRef } from '../firebase/firebase';
-
+import { LIcon } from "vue2-leaflet";
 export default {
     name: "GeoLocation",
     components: {
@@ -48,6 +49,7 @@ export default {
         LMarker,
         LPopup,
         TrashContainer,
+        LIcon
     },
     data() {
         return {
@@ -96,10 +98,11 @@ export default {
             data["coords"] = this.selectedCoords;
             landfillPointsRef.push(data);
             this.dialog = false;
-        }
+        },
     },
 
     async created() {
+
         this.gettingLocation = true;
         try {
             // this.getLandFills()
@@ -118,6 +121,7 @@ export default {
             this.errorStr = e.message;
         }
     },
+   
     
 };
 </script>
