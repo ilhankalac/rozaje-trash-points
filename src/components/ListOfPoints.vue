@@ -2,13 +2,19 @@
     <div class="container">
         <h2>Akcije</h2>
         <v-timeline dense>
-            <v-timeline-item 
+            <div
               v-for="item in markerLatLng"
               :key="item.key"
-              :color="item.isCleaned ? 'green' : 'red'"
+              @click="selectItem(item)"
+              class="timeline-item"
             >
-                <h3 style="text-align:left">{{item.placeName.toUpperCase()}} ({{item.date}})</h3>
-            </v-timeline-item>
+              <v-timeline-item 
+                style="padding-top: 20px;"
+                :color="item.isCleaned ? 'green' : 'red'"
+              >
+                  <h3 style="text-align:left; padding-top: 5px">{{item.placeName.toUpperCase()}} ({{item.date}})</h3>
+              </v-timeline-item>
+            </div>
         </v-timeline>
     </div>
 </template>
@@ -16,14 +22,20 @@
 <script>
 import { landfillPointsRef } from '../firebase/firebase';
 export default {
-       data() {
-        return {
-            markerLatLng: []
-        };
+    data() {
+      return {
+          markerLatLng: [],
+    };
     },
     firebase:{
         markerLatLng: landfillPointsRef 
     },
+
+    methods:{
+      selectItem(item){
+        console.log(item);
+      }
+    }
 }
 </script>
 
@@ -52,6 +64,12 @@ export default {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
+}
+
+.timeline-item:hover{
+  background: #243342;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 /* Optional: show position indicator in red */
