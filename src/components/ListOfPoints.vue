@@ -6,17 +6,16 @@
           <v-col cols="9" dark>
             <v-text-field dark label="Pretraži" ></v-text-field>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="2" style="margin-top:7px;">
             <div class="text-center">
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    color="primary"
-                    dark
+                    depressed
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <v-icon>fas </v-icon>
+                    <v-icon>mdi-filter</v-icon>
                   </v-btn>
                 </template>
                 <v-list>
@@ -31,7 +30,7 @@
           </div>
           </v-col>
         </v-row>
-        <v-timeline dense>
+        <v-timeline dense dark color="dark">
             <div
               v-for="item in markerLatLng"
               :key="item.key"
@@ -112,6 +111,12 @@ export default {
   cursor: pointer;
   border-radius: 5px;
 }
+
+.theme--light.v-timeline:before {
+    background: white;
+}
+
+
 
 /* Optional: show position indicator in red */
 
