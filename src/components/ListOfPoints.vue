@@ -21,6 +21,9 @@
 
 <script>
 import { landfillPointsRef } from '../firebase/firebase';
+import {eventBus} from "../main.js";
+
+
 export default {
     data() {
       return {
@@ -33,7 +36,9 @@ export default {
 
     methods:{
       selectItem(item){
-        console.log(item);
+        this.$store.state.selectedPoint = item;
+
+        eventBus.$emit('fireMethod');
       }
     }
 }

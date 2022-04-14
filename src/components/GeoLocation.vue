@@ -41,6 +41,9 @@ delete Icon.Default.prototype._getIconUrl;
 import firebase from 'firebase'
 import { landfillPointsRef } from '../firebase/firebase';
 import { LIcon } from "vue2-leaflet";
+import {eventBus} from "../main.js";
+
+
 export default {
     name: "GeoLocation",
     components: {
@@ -99,9 +102,17 @@ export default {
             landfillPointsRef.push(data);
             this.dialog = false;
         },
+        centerOnSelectedPoint(){
+            const selectedItem = this.$store.state.selectedPoint;
+            this.center = [selectedItem.coords.latitude,  selectedItem.coords.longitude]
+        }
     },
 
     async created() {
+
+        eventBus.$on('fireMethod', () => {
+            this.centerOnSelectedPoint();
+        })
 
         this.gettingLocation = true;
         try {

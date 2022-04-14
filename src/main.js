@@ -8,6 +8,8 @@ import { store } from './store.js'
 Vue.use(rtdbPlugin)
 Vue.config.productionTip = false
 
+export const eventBus = new Vue(); // added line
+
 new Vue({
   vuetify,
   firebase,
