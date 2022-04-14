@@ -1,6 +1,35 @@
 <template>
     <div class="container">
         <h2>Akcije</h2>
+        <v-row>
+          <v-col cols="10" dark>
+            <v-text-field class="text-input-blue" label="Pretraži" ></v-text-field>
+          </v-col>
+          <v-col cols="2">
+            <div class="text-center">
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="primary"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>filter</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    v-for="(item, index) in items"
+                    :key="index"
+                  >
+                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+          </div>
+          </v-col>
+        </v-row>
         <v-timeline dense>
             <div
               v-for="item in markerLatLng"
@@ -28,6 +57,12 @@ export default {
     data() {
       return {
           markerLatLng: [],
+          items: [
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me 2' },
+      ],
     };
     },
     firebase:{
@@ -76,7 +111,9 @@ export default {
   cursor: pointer;
   border-radius: 5px;
 }
-
+.text-input-blue .v-text-field__slot input {
+   color: #00f !important;
+}
 /* Optional: show position indicator in red */
 
 
