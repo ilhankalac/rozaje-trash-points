@@ -4,7 +4,13 @@
         <v-row>
           <v-col cols="1"></v-col>
           <v-col cols="9" dark>
-            <v-text-field dark label="Pretraži" ></v-text-field>
+            <v-text-field 
+              v-model="searchText" 
+              @keyup="filter(false)"
+              clearable
+              @click:clear="filter(true)"
+              dark label="Pretraži" 
+            ></v-text-field>
           </v-col>
           <v-col cols="2" style="margin-top:7px;">
             <div class="text-center">
@@ -57,24 +63,31 @@ export default {
     data() {
       return {
           markerLatLng: [],
+          searchText: "",
           items: [
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me 2' },
-      ],
+            { title: 'Click Me' },
+            { title: 'Click Me' },
+            { title: 'Click Me' },
+            { title: 'Click Me 2' },
+          ],
+      tempMarkerLatLng: []
     };
     },
     firebase:{
         markerLatLng: landfillPointsRef 
     },
-
+    created(){
+      this.tempMarkerLatLng = this.markerLatLng;
+    },
     methods:{
       selectItem(item){
         this.$store.state.selectedPoint = item;
-
         eventBus.$emit('fireMethod');
-      }
+      },
+      filter(clear = false){
+        clear ? this.searchText = "" : null;
+        this.markerLatLng = this.tempMarkerLatLng.filter(element => element.placeName.toLowerCase().includes(this.searchText.toLowerCase()))
+      },
     }
 }
 </script>
