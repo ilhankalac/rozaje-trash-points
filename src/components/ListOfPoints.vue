@@ -3,7 +3,7 @@
         <v-row style="margin-top:4px;">
           <v-col cols="10" dark>
             <v-text-field 
-              v-model="searchText" 
+              v-model="search.global" 
               @keyup="filter(false)"
               clearable
               @click:clear="filter(true)"
@@ -19,17 +19,40 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row style="margin-top:-20px;">
-          <v-expansion-panels flat v-model="openedPanel"> 
-            <v-expansion-panel style="background: #2C3E50; color: white;">
-              <v-expansion-panel-header hide-actions>
-                
-              </v-expansion-panel-header>
-              <v-expansion-panel-content style="margin-top:-30px;">
-                Lorem ipsum dolor sait amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+        <v-row style="margin-top:-20px; background:#243342; padding: 20px; margin-bottom: 2px;" v-if="showPanel">
+          <v-col>
+            <h4>Napredna pretraga</h4>
+            <v-text-field 
+                v-model="search.placeName" 
+                @keyup="filter(false)"
+                clearable
+                @click:clear="filter(true)"
+                dark label="Naziv mjesta" 
+            ></v-text-field>
+            <v-text-field 
+                v-model="search.description" 
+                @keyup="filter(false)"
+                clearable
+                @click:clear="filter(true)"
+                dark label="Opis" 
+            ></v-text-field>
+            <v-row>
+              <v-col cols="6"></v-col>
+              <v-col>
+                <v-date-picker 
+                    v-model="search.date" 
+                    @keyup="filter(false)"
+                    clearable
+                    @click:clear="filter(true)"
+                    dark label="Datum" 
+                    style="text-align:center;"
+                ></v-date-picker>
+              </v-col>
+            </v-row> <br>
+            <v-btn>Pretraži <v-icon>mdi-magnify</v-icon></v-btn>
+
+          </v-col>
+          
         </v-row>
         <v-timeline dense dark color="dark">
             <div
@@ -58,14 +81,15 @@ export default {
     data() {
       return {
           markerLatLng: [],
-          searchText: "",
-          items: [
-            { title: 'Očišćeno' },
-            { title: 'Click Me' },
-            { title: 'Click Me 2' },
-          ],
           tempMarkerLatLng: [],
-          openedPanel: null
+          openedPanel: null,
+          showPanel: false,
+          search: {
+            global: "",
+            placeName: "",
+            description: "",
+            date: ""
+          }
     };
     },
     firebase:{
@@ -80,10 +104,11 @@ export default {
         eventBus.$emit('fireMethod');
       },
       filter(clear = false){
-        clear ? this.searchText = "" : null;
-        this.markerLatLng = this.tempMarkerLatLng.filter(element => element.placeName.toLowerCase().includes(this.searchText.toLowerCase()))
+        clear ? this.search.global = "" : null;
+        this.markerLatLng = this.tempMarkerLatLng.filter(element => element.placeName.toLowerCase().includes(this.search.global.toLowerCase()))
       },
       openAndClosePanel (index) {
+        this.showPanel = !this.showPanel;
         this.openedPanel = this.openedPanel === null ? index : null;
       }
     }
