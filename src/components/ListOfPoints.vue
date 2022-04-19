@@ -1,9 +1,7 @@
 <template>
     <div class="container">
-        <h2>Akcije</h2>
-        <v-row>
-          <v-col cols="1"></v-col>
-          <v-col cols="9" dark>
+        <v-row style="margin-top:4px;">
+          <v-col cols="10" dark>
             <v-text-field 
               v-model="searchText" 
               @keyup="filter(false)"
@@ -13,28 +11,25 @@
             ></v-text-field>
           </v-col>
           <v-col cols="2" style="margin-top:7px;">
-            <div class="text-center">
-              <v-menu offset-y>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    depressed
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon>mdi-filter</v-icon>
-                  </v-btn>
-                </template>
-                <v-list>
-                  <v-list-item
-                    v-for="(item, index) in items"
-                    :key="index"
-                  >
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-          </div>
+            <v-btn
+              depressed
+              @click="openAndClosePanel(0)"
+            >
+              <v-icon>mdi-filter</v-icon>
+            </v-btn>
           </v-col>
+        </v-row>
+        <v-row style="margin-top:-20px;">
+          <v-expansion-panels flat v-model="openedPanel"> 
+            <v-expansion-panel style="background: #2C3E50; color: white;">
+              <v-expansion-panel-header hide-actions>
+                
+              </v-expansion-panel-header>
+              <v-expansion-panel-content style="margin-top:-30px;">
+                Lorem ipsum dolor sait amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-row>
         <v-timeline dense dark color="dark">
             <div
@@ -65,12 +60,12 @@ export default {
           markerLatLng: [],
           searchText: "",
           items: [
-            { title: 'Click Me' },
-            { title: 'Click Me' },
+            { title: 'Očišćeno' },
             { title: 'Click Me' },
             { title: 'Click Me 2' },
           ],
-      tempMarkerLatLng: []
+          tempMarkerLatLng: [],
+          openedPanel: null
     };
     },
     firebase:{
@@ -88,6 +83,9 @@ export default {
         clear ? this.searchText = "" : null;
         this.markerLatLng = this.tempMarkerLatLng.filter(element => element.placeName.toLowerCase().includes(this.searchText.toLowerCase()))
       },
+      openAndClosePanel (index) {
+        this.openedPanel = this.openedPanel === null ? index : null;
+      }
     }
 }
 </script>
