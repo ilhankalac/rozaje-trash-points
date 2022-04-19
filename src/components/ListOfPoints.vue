@@ -66,9 +66,6 @@
                 :color="item.isCleaned ? 'green' : 'red'"
               >
                   <h3 style="text-align:left; padding-top: 5px">{{item.placeName.toUpperCase()}} ({{item.date}})</h3>
-                  <v-dialog v-model="dialog" width="80%">
-                    <img :src="selectedPhoto" alt="">
-                </v-dialog>
               </v-timeline-item>
             </div>
         </v-timeline>
@@ -93,8 +90,6 @@ export default {
             description: "",
             date: "",
           },
-          dialog: false,
-          selectedPhoto: ""
     };
     },
     firebase:{
@@ -105,11 +100,6 @@ export default {
     },
     methods:{
       selectItem(item){
-
-        this.selectedPhoto = item.post.photo;
-        this.dialog = true;
-
-        
         this.$store.state.selectedPoint = item;
         eventBus.$emit('fireMethod');
       },

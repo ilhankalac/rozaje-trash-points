@@ -7,7 +7,11 @@
                 <l-popup>
                     <div>
                         <h3>{{item.placeName}} - {{item.date}}</h3>
-                        <img style="max-width: 200px; text-align:center" :src="item.post.photo" alt="Italian Trulli">
+                        <img style="max-width: 200px; text-align:center" 
+                            :src="item.post.photo" 
+                            alt="Italian Trulli"
+                            @click="openPhotoDialog(item.post.photo)"
+                        >
                     </div>
                 </l-popup>
                 <l-icon
@@ -17,6 +21,9 @@
         </l-map>
         <v-dialog v-model="dialog" width="500px">
             <TrashContainer @saveData="saveData($event)"/>
+        </v-dialog>
+         <v-dialog v-model="photoDialog" width="80%">
+            <img :src="selectedPhoto" alt="">
         </v-dialog>
         <!-- <p v-for="item in markerLatLng" :key="item.key">{{item}}</p> -->
     </div>
@@ -67,7 +74,9 @@ export default {
             gettingLocation: false,
             errorStr: null,
             dialog: false,
-            selectedCoords: []
+            selectedCoords: [],
+            photoDialog: false,
+            selectedPhoto: ""
         };
     },
     firebase:{
@@ -105,6 +114,10 @@ export default {
         centerOnSelectedPoint(){
             const selectedItem = this.$store.state.selectedPoint;
             this.center = [selectedItem.coords.latitude,  selectedItem.coords.longitude]
+        },
+        openPhotoDialog(url){
+            this.selectedPhoto = url;
+            this.photoDialog = true;
         }
     },
 
