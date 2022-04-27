@@ -3,7 +3,7 @@
     <div>
         <l-map class="leaflet-canvas" :zoom="zoom" :center="center" @click="addMarker">
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-            <l-marker v-for="item in markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
+            <l-marker v-for="item in $store.state.markerLatLng " :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
                 <l-popup>
                     <div>
                         <h3>{{item.placeName}} - {{item.date}}</h3>
@@ -110,6 +110,7 @@ export default {
             data["coords"] = this.selectedCoords;
             landfillPointsRef.push(data);
             this.dialog = false;
+            this.$store.state.markerLatLng = this.markerLatLng;
         },
         centerOnSelectedPoint(){
             const selectedItem = this.$store.state.selectedPoint;
@@ -118,7 +119,7 @@ export default {
         openPhotoDialog(url){
             this.selectedPhoto = url;
             this.photoDialog = true;
-        }
+        },
     },
 
     async created() {
@@ -140,6 +141,9 @@ export default {
                 // Coordinates of Rozaje
                 42.842649, 20.166717
             ];
+            this.$store.state.markerLatLng = this.markerLatLng;
+
+
         } catch (e) {
             this.gettingLocation = false;
             this.errorStr = e.message;

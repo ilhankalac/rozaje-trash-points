@@ -50,7 +50,7 @@
         </v-row>
         <v-timeline dense dark color="dark">
             <div
-              v-for="item in markerLatLng"
+              v-for="item in $store.state.markerLatLng "
               :key="item.key"
               @click="selectItem(item);"
               class="timeline-item"
@@ -99,7 +99,7 @@ export default {
       },
       filter(clear = false){
         clear ? this.search.global = "" : null;
-        this.markerLatLng = this.tempMarkerLatLng.filter(element => element.placeName.toLowerCase().includes(this.search.global.toLowerCase()))
+        this.$store.state.markerLatLng  = this.tempMarkerLatLng.filter(element => element.placeName.toLowerCase().includes(this.search.global.toLowerCase()))
       },
       openAndClosePanel (index) {
         this.showPanel = !this.showPanel;
