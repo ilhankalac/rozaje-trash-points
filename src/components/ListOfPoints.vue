@@ -24,16 +24,12 @@
             <h4>Napredna pretraga</h4>
             <v-text-field 
                 v-model="search.placeName" 
-                @keyup="filter(false)"
                 clearable
-                @click:clear="filter(true)"
                 dark label="Naziv mjesta" 
             ></v-text-field>
             <v-text-field 
                 v-model="search.description" 
-                @keyup="filter(false)"
                 clearable
-                @click:clear="filter(true)"
                 dark label="Opis" 
             ></v-text-field>
             <v-row>
@@ -41,9 +37,7 @@
               <v-col>
                 <v-date-picker 
                     v-model="search.date" 
-                    @keyup="filter(false)"
                     clearable
-                    @click:clear="filter(true)"
                     dark label="Datum" 
                     style="text-align:center;"
                 ></v-date-picker>
