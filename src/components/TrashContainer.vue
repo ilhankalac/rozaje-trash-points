@@ -16,7 +16,7 @@
       <img class="preview" height="268" width="356" :src="img1" />
     </div>
     <v-text-field label="Naziv mjesta" v-model="trash.placeName" />
-    <v-text-field label="Datum" v-model="trash.date" />
+    <v-date-picker label="Datum" v-model="trash.date" color="green lighten-1" value=""></v-date-picker>
     <v-text-field label="Detaljan opis" v-model="trash.description" />
     <v-checkbox label="Očišćen?" v-model="trash.isCleaned" />
   
@@ -34,7 +34,7 @@ export default {
       imageData: null,
       trash: {
         placeName: "",
-        date: "",
+        date: new Date().toISOString().substr(0, 10),
         description: "",
         isCleaned: false
       },
@@ -46,9 +46,13 @@ export default {
         photo: this.img1,
         caption: this.caption,
       };
-
       this.trash.post = post;
 
+      // Reformatting date
+      const ddmmyyy = this.trash.date.split("-")
+      this.trash.date = `${ddmmyyy[2]}.${ddmmyyy[1]}.${ddmmyyy[0]}.`;
+
+      // Marking point if is cleaned or not (red, green)
       this.trash.isCleaned ? this.trash.markerColor = "green" : this.trash.markerColor = "red";
 
       this.$emit("saveData", this.trash);
