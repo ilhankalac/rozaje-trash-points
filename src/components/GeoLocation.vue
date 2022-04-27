@@ -2,8 +2,15 @@
 <div>
     <div>
         <l-map class="leaflet-canvas" :zoom="zoom" :center="center" @click="addMarker">
+            <div class="box"> 
+                <v-card style="padding: 5px;">
+                    <h3>Nesređene deponije: {{$store.state.markerLatLng.length}} </h3>
+                    <h3>Sređene deponije: {{$store.state.markerLatLng.filter(item => item.isCleaned).length}}  </h3>
+                    <h2>Ukupno: {{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}  </h2>
+                </v-card>
+            </div>
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-            <l-marker v-for="item in $store.state.markerLatLng " :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
+            <l-marker v-for="item in $store.state.markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
                 <l-popup>
                     <div>
                         <h3>{{item.placeName}} - {{item.date}}</h3>
@@ -76,7 +83,7 @@ export default {
             dialog: false,
             selectedCoords: [],
             photoDialog: false,
-            selectedPhoto: ""
+            selectedPhoto: "",
         };
     },
     firebase:{
@@ -143,7 +150,6 @@ export default {
             ];
             this.$store.state.markerLatLng = this.markerLatLng;
 
-
         } catch (e) {
             this.gettingLocation = false;
             this.errorStr = e.message;
@@ -161,5 +167,15 @@ export default {
     z-index:1;
     padding-left:10px;
     border-radius: 5px;
+}
+.box{
+    position: absolute;
+    top: 0;
+    z-index: 9999;
+    text-align: center;
+    width: 200px;
+    right: 0%;
+    margin-left: -75x; /* half of the width */
+    text-align: left;
 }
 </style>

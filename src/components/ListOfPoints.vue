@@ -40,10 +40,11 @@
                     clearable
                     dark label="Datum" 
                     style="text-align:center;"
+                    :range="true"
                 ></v-date-picker>
               </v-col>
             </v-row> <br>
-            <v-btn>Pretraži <v-icon>mdi-magnify</v-icon></v-btn>
+            <v-btn @click="createReport">Pretraži <v-icon>mdi-magnify</v-icon></v-btn>
 
           </v-col>
           
@@ -104,6 +105,9 @@ export default {
       openAndClosePanel (index) {
         this.showPanel = !this.showPanel;
         this.openedPanel = this.openedPanel === null ? index : null;
+      },
+      createReport(){
+        console.log(this.search);
       }
     }
 }
