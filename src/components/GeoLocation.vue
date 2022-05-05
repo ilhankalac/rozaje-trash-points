@@ -26,7 +26,7 @@
                 />
             </l-marker>
         </l-map>
-        <v-dialog v-model="dialog" width="500px">
+        <v-dialog v-model="dialog" width="500px" :key="Math.random()">
             <TrashContainer @saveData="saveData($event)"/>
         </v-dialog>
          <v-dialog v-model="photoDialog" width="80%">
