@@ -1,6 +1,6 @@
 <template>
   <v-card style="padding:5%">
-    <h2>Unesi informacije o deponiji</h2>
+    <h2>Unesi informacije o deponiji </h2>
     <div>
       <v-btn @click="click1">Choose photo</v-btn>
       <input
@@ -24,8 +24,14 @@
   </v-card>
 </template>
 
+
 <script>
+
+
 import firebase from "firebase";
+import moment from 'moment'
+
+
 export default {
   data() {
     return {
@@ -49,8 +55,9 @@ export default {
       this.trash.post = post;
 
       // Reformatting date
-      const ddmmyyy = this.trash.date.split("-")
-      this.trash.date = `${ddmmyyy[2]}.${ddmmyyy[1]}.${ddmmyyy[0]}.`;
+      // const ddmmyyy = this.trash.date.split("-")
+      // this.trash.date = `${ddmmyyy[2]}.${ddmmyyy[1]}.${ddmmyyy[0]}.`;
+      this.trash.date = moment(this.trash.date).valueOf()
 
       // Marking point if is cleaned or not (red, green)
       this.trash.isCleaned ? this.trash.markerColor = "green" : this.trash.markerColor = "red";
@@ -62,6 +69,9 @@ export default {
     },
     click1() {
       this.$refs.input1.click();
+    },
+    currentDateTime() {
+      return moment().toDate()
     },
     previewImage(event) {
       this.uploadValue = 0;

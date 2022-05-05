@@ -10,6 +10,11 @@ Vue.config.productionTip = false
 
 export const eventBus = new Vue(); // added line
 
+// Global Mixin
+import GlobalMixin from './mixins/global';
+Vue.mixin(GlobalMixin);
+
+
 new Vue({
   vuetify,
   firebase,

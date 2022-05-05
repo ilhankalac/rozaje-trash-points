@@ -60,7 +60,7 @@
                 style="padding-top: 20px;"
                 :color="item.isCleaned ? 'green' : 'red'"
               >
-                  <h3 style="text-align:left; padding-top: 5px">{{item.placeName.toUpperCase()}} ({{item.date}})</h3>
+                  <h3 style="text-align:left; padding-top: 5px">{{item.placeName.toUpperCase()}} ({{ item.date | formatDate }})</h3>
               </v-timeline-item>
             </div>
         </v-timeline>
@@ -70,7 +70,6 @@
 <script>
 import { landfillPointsRef } from '../firebase/firebase';
 import {eventBus} from "../main.js";
-
 
 export default {
     data() {
@@ -85,7 +84,7 @@ export default {
             description: "",
             date: "",
           },
-    };
+      };
     },
     firebase:{
         markerLatLng: landfillPointsRef 
@@ -108,7 +107,7 @@ export default {
       },
       createReport(){
         console.log(this.search);
-      }
+      },
     }
 }
 </script>
