@@ -161,12 +161,11 @@ export default {
 </script>
 <style scoped>
 .leaflet-canvas{
-    height: 900px; 
-    margin-top:30px;
-    width:100%;
-    z-index:1;
-    padding-left:10px;
+    height: 800px; 
+    width:80%;
     border-radius: 5px;
+    margin: 0 auto;
+    margin-top: 45px;
 }
 .box{
     position: absolute;
@@ -175,7 +174,6 @@ export default {
     text-align: center;
     width: 200px;
     right: 0%;
-    margin-left: -75x; /* half of the width */
     text-align: left;
 }
 </style>
