@@ -4,16 +4,16 @@
         <l-map class="leaflet-canvas" :zoom="zoom" :center="center" @click="addMarker">
             <div class="box"> 
                 <v-card style="padding: 5px;">
-                    <h3>Nesređene deponije: {{$store.state.markerLatLng.length}} </h3>
+                    <h3>Nesređene deponije: {{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}</h3>
                     <h3>Sređene deponije: {{$store.state.markerLatLng.filter(item => item.isCleaned).length}}  </h3>
-                    <h2>Ukupno: {{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}  </h2>
+                    <h2>Ukupno:  {{$store.state.markerLatLng.length}}   </h2>
                 </v-card>
             </div>
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-marker v-for="item in $store.state.markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
                 <l-popup>
                     <div>
-                        <h3>{{item.placeName}} - {{item.date}}</h3>
+                        <h3>{{item.placeName}} - {{item.date | formatDate}}</h3>
                         <img style="max-width: 200px; text-align:center" 
                             :src="item.post.photo" 
                             alt="Italian Trulli"
@@ -71,7 +71,7 @@ export default {
     data() {
         return {
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            attribution: '<a target="_blank" href="https://www.facebook.com/ocistimorozaje">Zajednica Očistimo Rožaje</a>',
             zoom: 14,
             center: [42.842649, 20.166717],
             markerLatLng: [

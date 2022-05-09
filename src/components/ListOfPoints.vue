@@ -70,6 +70,7 @@
 <script>
 import { landfillPointsRef } from '../firebase/firebase';
 import {eventBus} from "../main.js";
+import moment from 'moment'
 
 export default {
     data() {
@@ -82,7 +83,7 @@ export default {
             global: "",
             placeName: "",
             description: "",
-            date: "",
+            date: [new Date().toISOString().substr(0, 10)],
           },
       };
     },
@@ -106,7 +107,30 @@ export default {
         this.openedPanel = this.openedPanel === null ? index : null;
       },
       createReport(){
-        console.log(this.search);
+        let date1, date2;
+
+
+        console.log(this.search.date);
+        [date1, date2] = this.search.date;
+
+
+        date1 = moment(date1).valueOf();
+
+        if(date2)
+          date2 = moment(date2).valueOf();
+        else 
+          date2 = date1;
+
+        let temp;
+        
+        if(date1 < date2){
+          temp = date1;
+          date1 = date2;
+          date2 = temp;
+        }
+        // Filtering array by date range
+        this.$store.state.markerLatLng = this.tempMarkerLatLng.filter(element => element.date <= date1 && element.date >= date2)
+
       },
     }
 }
