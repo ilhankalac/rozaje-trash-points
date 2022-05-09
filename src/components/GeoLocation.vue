@@ -166,6 +166,8 @@ export default {
     border-radius: 5px;
     margin: 0 auto;
     margin-top: 45px;
+    z-index:1;
+    padding-left:10px;
 }
 .box{
     position: absolute;
