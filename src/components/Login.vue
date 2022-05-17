@@ -3,13 +3,11 @@
         <v-card class="login-container">
             <v-text-field 
                 v-model="email" 
-                clearable
                 label="Email" 
                 @keyup.enter="login"
             ></v-text-field>
             <v-text-field 
                 v-model="password" 
-                clearable
                 label="Lozinka"
                 type="password"
                 @keyup.enter="login"

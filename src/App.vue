@@ -5,6 +5,7 @@
   <v-app id="app">
     <div class="topnav">
       <h4 class="topNavH">Lokalizovanje deponija Rožajske teritorije</h4>
+      <v-btn v-if="$store.state.user" style="float:right; margin: 20px;" @click="logout">Odjavi se</v-btn>
     </div>
     <router-view/>
   </v-app>
@@ -12,7 +13,7 @@
 
 <script>
 
-
+import firebase from 'firebase'
 
 export default {
     name: "App",
@@ -21,6 +22,18 @@ export default {
     methods:{
       openDialog(){
         this.dialog = true;
+      },
+      logout(){
+        firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$store.state.user = null;
+          this.$router.push({
+            name: "Login"
+          });
+        });
+
       }
     }
 };
