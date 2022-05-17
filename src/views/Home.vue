@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="topnav">
-      <router-link :to="'login'"> Login</router-link>
-      <h4 class="topNavH">Lokalizovanje deponija Rožajske teritorije</h4>
-    </div>
     <v-row style="background-color:#2c3e50">
       <v-col md="8" cols="12" xs="12">
         <GeoLocation
