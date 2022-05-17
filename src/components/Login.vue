@@ -2,33 +2,48 @@
     <div>
         <v-card class="login-container">
             <v-text-field 
-                v-model="username" 
+                v-model="email" 
                 clearable
-                label="Korisničko ime" 
+                label="Email" 
+                @keyup.enter="login"
             ></v-text-field>
             <v-text-field 
                 v-model="password" 
                 clearable
                 label="Lozinka"
                 type="password"
+                @keyup.enter="login"
             ></v-text-field>
-            <v-btn color="pink" @click="login">Prijavi se <v-icon>mdi-login</v-icon></v-btn>
-
+            <p v-if="error" style="color:red">{{error}}</p>
+            <v-btn color="pink" @click="login" > Prijavi se<v-icon>mdi-login</v-icon></v-btn>
         </v-card>
     </div>
 </template>
 
 <script>
+import firebase from 'firebase'
+
 export default {
     data(){
         return {
-            username: '',
-            password: ''
+            email: '',
+            password: '',
+            error: null
         }
     },
     methods:{
         login(){
-            
+             firebase
+                .auth()
+                .signInWithEmailAndPassword(this.email, this.password)
+                .then(data => {
+                    this.$store.state.user = data.user;
+                    this.error = null;
+                    this.$router.push({ name: "Home" });
+                })
+                .catch(err => {
+                    this.error = err.message;
+                });
         }
     }
 
@@ -42,7 +57,7 @@ export default {
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    min-width: 300px;
+    min-width: 500px;
     padding: 20px;
 }
 
