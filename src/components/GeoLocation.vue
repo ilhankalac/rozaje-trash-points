@@ -2,7 +2,7 @@
 <div>
     <div>
         <l-map class="leaflet-canvas" :zoom="zoom" :center="center" @click="addMarker">
-            <div class="box"> 
+            <div class="box" v-if="$store.state.markerLatLng.length > 0"> 
                 <v-card style="padding: 5px;">
                     <h3>Nesređene deponije: {{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}</h3>
                     <h3>Sređene deponije: {{$store.state.markerLatLng.filter(item => item.isCleaned).length}}  </h3>

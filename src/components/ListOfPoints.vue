@@ -19,7 +19,16 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row style="margin-top:-20px; background:#243342; padding: 20px; margin-bottom: 2px;" v-if="showPanel">
+        <v-progress-circular
+            v-if="$store.state.markerLatLng.length === 0"
+            indeterminate
+            :size="50"
+            color="green"
+        ></v-progress-circular>
+        <v-row 
+          v-if="showPanel"
+          style="margin-top:-20px; background:#243342; padding: 20px; margin-bottom: 2px;" 
+        >
           <v-col>
             <h4>Napredna pretraga</h4>
             <v-text-field 
@@ -49,7 +58,11 @@
           </v-col>
           
         </v-row>
-        <v-timeline dense dark color="dark">
+        <v-timeline 
+          v-if="$store.state.markerLatLng.length > 0"
+          dense dark 
+          color="dark"
+        >
             <div
               v-for="item in $store.state.markerLatLng "
               :key="item.key"
@@ -130,7 +143,7 @@ export default {
         }
         // Filtering array by date range
         this.$store.state.markerLatLng = this.tempMarkerLatLng.filter(element => element.date <= date1 && element.date >= date2)
-
+  
       },
     }
 }
