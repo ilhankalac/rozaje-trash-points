@@ -20,7 +20,7 @@
           </v-col>
         </v-row>
         <v-progress-circular
-            v-if="$store.state.markerLatLng.length === 0"
+            v-if="$store.state.markerLatLng === undefined"
             indeterminate
             :size="50"
             color="green"
@@ -59,7 +59,7 @@
           
         </v-row>
         <v-timeline 
-          v-if="$store.state.markerLatLng.length > 0"
+          v-if="$store.state.markerLatLng"
           dense dark 
           color="dark"
         >
