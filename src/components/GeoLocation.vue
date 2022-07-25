@@ -1,7 +1,13 @@
 <template>
 <div>
     <div>
-        <l-map class="leaflet-canvas" :zoom="zoom" :center="center" @click="addMarker">
+        <l-map 
+            class="leaflet-canvas" 
+            :zoom="zoom" 
+            :center="center" 
+            @click="addMarker"
+            :style="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs ? 'height: 600px' : ''"
+        >
             <div class="box" v-if="$store.state.markerLatLng"> 
                 <v-card style="padding: 5px;">
                     <h3>Nesređene deponije: {{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}</h3>
@@ -172,7 +178,7 @@ export default {
     width:80%;
     border-radius: 5px;
     margin: 0 auto;
-    margin-top: 45px;
+    margin-top: 42px;
     z-index:1;
     padding-left:10px;
 }
