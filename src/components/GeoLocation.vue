@@ -84,6 +84,7 @@ export default {
             selectedCoords: [],
             photoDialog: false,
             selectedPhoto: "",
+            tempData: []
         };
     },
     firebase:{
@@ -148,10 +149,9 @@ export default {
                 // Coordinates of Rozaje
                 42.842649, 20.166717
             ];
-            console.log(this.$store.state.markerLatLng);
-
             setTimeout(() => {
                 this.$store.state.markerLatLng = this.markerLatLng;
+                this.tempData = this.$store.state.markerLatLng;
             }, 1000);
 
         } catch (e) {
@@ -159,6 +159,9 @@ export default {
             this.errorStr = e.message;
         }
     },
+    lastMonthData() {
+        // this.$store.state.markerLatLng = this.tempData.filter(element => element.date > )
+    }
    
     
 };
