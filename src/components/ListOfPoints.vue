@@ -30,17 +30,7 @@
           style="margin-top:-20px; background:#243342; padding: 20px; margin-bottom: 2px;" 
         >
           <v-col>
-            <h4>Napredna pretraga</h4>
-            <v-text-field 
-                v-model="search.placeName" 
-                clearable
-                dark label="Naziv mjesta" 
-            ></v-text-field>
-            <v-text-field 
-                v-model="search.description" 
-                clearable
-                dark label="Opis" 
-            ></v-text-field>
+            <h4>Pretraga po datumu</h4>
             <v-row>
               <v-col cols="6"></v-col>
               <v-col>
