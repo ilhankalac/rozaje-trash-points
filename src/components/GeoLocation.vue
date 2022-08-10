@@ -20,6 +20,14 @@
                 <l-popup>
                     <div>
                         <h3>{{item.placeName}} - {{item.date | formatDate}}</h3>
+                        <v-checkbox 
+                            v-if="$store.state.user"
+                            label="Očišćen?"
+                            v-model="item.isCleaned" 
+                            @click="changeStatus(item)"
+                        >
+                        Očišćen?
+                        </v-checkbox>
                         <img style="max-width: 200px; text-align:center" 
                             :src="item.post.photo" 
                             alt="Italian Trulli"
@@ -128,6 +136,12 @@ export default {
             landfillPointsRef.push(data);
             this.dialog = false;
             this.$store.state.markerLatLng = this.markerLatLng;
+        },
+        changeStatus(item) {
+            landfillPointsRef.child(item['.key']).update({
+                isCleaned: !item.isCleaned,
+                markerColor: item.markerColor === 'red' ? 'green' : 'red'
+            })
         },
         centerOnSelectedPoint(){
             const selectedItem = this.$store.state.selectedPoint;
