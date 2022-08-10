@@ -6,7 +6,7 @@
             :zoom="zoom" 
             :center="center" 
             @click="addMarker"
-            :style="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs ? 'height: 600px' : ''"
+            :style="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs ? 'height: 600px' : 'height: 800px'"
         >
             <div class="box" v-if="$store.state.markerLatLng"> 
                 <v-card style="padding: 5px;">
@@ -113,6 +113,9 @@ export default {
             });
         },
         addMarker(event) {
+
+            if (!this.$store.state.user) return;
+
             this.selectedCoords = {
                 latitude: event.latlng.lat, 
                 longitude: event.latlng.lng
@@ -174,7 +177,6 @@ export default {
 </script>
 <style scoped>
 .leaflet-canvas{
-    height: 800px; 
     width:80%;
     border-radius: 5px;
     margin: 0 auto;

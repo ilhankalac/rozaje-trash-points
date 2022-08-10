@@ -40,6 +40,9 @@ export default {
 </script>
 
 <style>
+.topnav{
+  width: 100%;
+}
 
 
 </style>
