@@ -24,7 +24,7 @@
                             v-if="$store.state.user"
                             label="Očišćen?"
                             v-model="item.isCleaned" 
-                            @click="changeStatus(item)"
+                            @change="changeStatus(item, $event)"
                         >
                         Očišćen?
                         </v-checkbox>
@@ -137,10 +137,10 @@ export default {
             this.dialog = false;
             this.$store.state.markerLatLng = this.markerLatLng;
         },
-        changeStatus(item) {
+        changeStatus(item, event) {
             landfillPointsRef.child(item['.key']).update({
-                isCleaned: !item.isCleaned,
-                markerColor: item.markerColor === 'red' ? 'green' : 'red'
+                isCleaned: event,
+                markerColor: event ? 'green' : 'red'
             })
         },
         centerOnSelectedPoint(){

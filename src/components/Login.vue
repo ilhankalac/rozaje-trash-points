@@ -55,7 +55,7 @@ export default {
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    min-width: 500px;
+    min-width: 70%;
     padding: 20px;
 }
 
