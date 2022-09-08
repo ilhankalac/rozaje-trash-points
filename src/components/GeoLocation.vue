@@ -44,7 +44,9 @@
             <TrashContainer @saveData="saveData($event)"/>
         </v-dialog>
          <v-dialog v-model="photoDialog" width="80%">
-            <img :src="selectedPhoto" alt="">
+            <div style="max-height: 600px;">
+                <img :src="selectedPhoto" class="dialog-image" >
+            </div>
         </v-dialog>
         <!-- <p v-for="item in markerLatLng" :key="item.key">{{item}}</p> -->
     </div>
@@ -63,10 +65,6 @@ delete Icon.Default.prototype._getIconUrl;
 
 
 
-
-
-
-import firebase from 'firebase'
 import { landfillPointsRef } from '../firebase/firebase';
 import { LIcon } from "vue2-leaflet";
 import {eventBus} from "../main.js";
@@ -86,7 +84,7 @@ export default {
         return {
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             attribution: '<a target="_blank" href="https://www.facebook.com/ocistimorozaje">Zajednica Očistimo Rožaje</a>',
-            zoom: 14,
+            zoom: 12,
             center: [42.842649, 20.166717],
             markerLatLng: [
 
@@ -206,5 +204,15 @@ export default {
     width: 200px;
     right: 0%;
     text-align: left;
+}
+.dialog-image{
+    max-height: 90%;
+    max-width: 90%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 </style>
