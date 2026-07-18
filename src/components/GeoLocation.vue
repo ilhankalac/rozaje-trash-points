@@ -1,56 +1,83 @@
 <template>
-<div>
-    <div>
-        <l-map 
-            class="leaflet-canvas" 
-            :zoom="zoom" 
-            :center="center" 
-            @click="addMarker"
-            :style="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs ? 'height: 600px' : 'height: 800px'"
-        >
-            <div class="box" v-if="$store.state.markerLatLng"> 
-                <v-card style="padding: 5px;">
-                    <h3>Nesređene deponije: {{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}</h3>
-                    <h3>Sređene deponije: {{$store.state.markerLatLng.filter(item => item.isCleaned).length}}  </h3>
-                    <h2>Ukupno:  {{$store.state.markerLatLng.length}}   </h2>
-                </v-card>
-            </div>
-            <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-            <l-marker v-for="item in $store.state.markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
-                <l-popup>
-                    <div>
-                        <h3>{{item.placeName}} - {{item.date | formatDate}}</h3>
-                        <v-checkbox 
-                            v-if="$store.state.user"
-                            label="Očišćen?"
-                            v-model="item.isCleaned" 
-                            @change="changeStatus(item, $event)"
-                        >
-                        Očišćen?
-                        </v-checkbox>
-                        <img style="max-width: 200px; text-align:center" 
-                            :src="item.post.photo" 
-                            alt="Italian Trulli"
-                            @click="openPhotoDialog(item.post.photo)"
-                        >
+<div class="map-wrapper">
+    <l-map
+        class="leaflet-canvas"
+        :zoom="zoom"
+        :center="center"
+        @click="addMarker"
+        :style="$vuetify.breakpoint.smAndDown ? 'height: 460px' : 'height: calc(100vh - 72px)'"
+    >
+        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+        <l-marker v-for="item in $store.state.markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
+            <l-popup>
+                <div class="marker-popup">
+                    <div class="popup-head">
+                        <span class="popup-title">{{item.placeName}}</span>
+                        <span class="popup-badge" :class="item.isCleaned ? 'is-clean' : 'is-dirty'">
+                            {{ item.isCleaned ? 'Očišćeno' : 'Nesređeno' }}
+                        </span>
                     </div>
-                </l-popup>
-                <l-icon
-                    :icon-url="`https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${item.markerColor}.png`"
-                />
-            </l-marker>
-        </l-map>
-        <v-dialog v-model="dialog" width="500px" :key="Math.random()">
-            <TrashContainer @saveData="saveData($event)"/>
-        </v-dialog>
-         <v-dialog v-model="photoDialog" width="80%">
-            <div style="max-height: 600px;">
-                <img :src="selectedPhoto" class="dialog-image" >
+                    <div class="popup-date">
+                        <v-icon x-small color="#64748b">mdi-calendar</v-icon>
+                        {{item.date | formatDate}}
+                    </div>
+                    <v-checkbox
+                        v-if="$store.state.user"
+                        class="mt-1"
+                        hide-details
+                        dense
+                        label="Označi kao očišćeno"
+                        color="success"
+                        v-model="item.isCleaned"
+                        @change="changeStatus(item, $event)"
+                    ></v-checkbox>
+                    <img class="popup-photo"
+                        :src="item.post.photo"
+                        alt="Fotografija deponije"
+                        @click="openPhotoDialog(item.post.photo)"
+                    >
+                </div>
+            </l-popup>
+            <l-icon
+                :icon-url="`https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${item.markerColor}.png`"
+            />
+        </l-marker>
+    </l-map>
+
+    <div class="stat-panel" v-if="$store.state.markerLatLng">
+        <div class="stat-tile total">
+            <span class="stat-value">{{$store.state.markerLatLng.length}}</span>
+            <span class="stat-label">Ukupno</span>
+        </div>
+        <div class="stat-tile dirty">
+            <span class="stat-dot"></span>
+            <div class="stat-meta">
+                <span class="stat-value">{{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}</span>
+                <span class="stat-label">Nesređene</span>
             </div>
-        </v-dialog>
-        <!-- <p v-for="item in markerLatLng" :key="item.key">{{item}}</p> -->
+        </div>
+        <div class="stat-tile clean">
+            <span class="stat-dot"></span>
+            <div class="stat-meta">
+                <span class="stat-value">{{$store.state.markerLatLng.filter(item => item.isCleaned).length}}</span>
+                <span class="stat-label">Sređene</span>
+            </div>
+        </div>
     </div>
-    
+
+    <v-chip v-if="$store.state.user" class="map-hint" color="primary" small label>
+        <v-icon left x-small>mdi-gesture-tap</v-icon>
+        Klikni na mapu da dodaš deponiju
+    </v-chip>
+
+    <v-dialog v-model="dialog" width="520px" :key="Math.random()">
+        <TrashContainer @saveData="saveData($event)"/>
+    </v-dialog>
+    <v-dialog v-model="photoDialog" width="80%">
+        <div class="photo-dialog">
+            <img :src="selectedPhoto" class="dialog-image" >
+        </div>
+    </v-dialog>
 </div>
 </template>
 
@@ -188,31 +215,124 @@ export default {
 };
 </script>
 <style scoped>
-.leaflet-canvas{
-    width:80%;
-    border-radius: 5px;
+.map-wrapper {
+    position: relative;
+    width: 100%;
+}
+.leaflet-canvas {
+    width: 100%;
+    z-index: 1;
+}
+
+/* Floating glass stats */
+.stat-panel {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    width: 180px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: saturate(160%) blur(12px);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+.stat-tile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 12px;
+}
+.stat-tile.total {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(20, 184, 166, 0.12));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.stat-tile.dirty { background: rgba(244, 63, 94, 0.10); }
+.stat-tile.clean { background: rgba(34, 197, 94, 0.10); }
+.stat-meta { display: flex; flex-direction: column; line-height: 1.1; }
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #f8fafc;
+}
+.stat-tile.total .stat-value { font-size: 1.7rem; }
+.stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+.stat-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.stat-tile.dirty .stat-dot { background: #f43f5e; box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.15); }
+.stat-tile.clean .stat-dot { background: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
+
+.map-hint {
+    position: absolute;
+    left: 16px;
+    bottom: 26px;
+    z-index: 500;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+}
+
+/* Marker popup */
+.marker-popup { min-width: 200px; }
+.popup-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+.popup-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; }
+.popup-badge {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.popup-badge.is-clean { background: #dcfce7; color: #15803d; }
+.popup-badge.is-dirty { background: #ffe4e6; color: #be123c; }
+.popup-date { font-size: 0.78rem; color: #64748b; margin-bottom: 2px; }
+.popup-photo {
+    display: block;
+    width: 100%;
+    max-width: 220px;
+    margin-top: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.popup-photo:hover { transform: scale(1.02); }
+
+.photo-dialog {
+    position: relative;
+    min-height: 300px;
+    max-height: 80vh;
+    background: #0b1220;
+    border-radius: 16px;
+}
+.dialog-image {
+    display: block;
+    max-height: 80vh;
+    max-width: 100%;
     margin: 0 auto;
-    margin-top: 42px;
-    z-index:1;
-    padding-left:10px;
-}
-.box{
-    position: absolute;
-    top: 0;
-    z-index: 9999;
-    text-align: center;
-    width: 200px;
-    right: 0%;
-    text-align: left;
-}
-.dialog-image{
-    max-height: 90%;
-    max-width: 90%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
+    border-radius: 16px;
 }
 </style>

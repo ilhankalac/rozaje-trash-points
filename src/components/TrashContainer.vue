@@ -1,26 +1,79 @@
 <template>
-  <v-card style="padding:5%">
-    <h2>Unesi informacije o deponiji </h2>
-    <div>
-      <v-btn @click="click1">Choose photo</v-btn>
-      <input
-        type="file"
-        ref="input1"
-        style="display: none"
-        @change="previewImage"
-        accept="image/*"
-      />
+  <v-card class="trash-card">
+    <div class="trash-header">
+      <v-icon color="primary" class="mr-2">mdi-map-marker-plus</v-icon>
+      <span>Unesi informacije o deponiji</span>
     </div>
-    <br />
-    <div v-if="imageData != null">
-      <img class="preview" height="268" width="356" :src="img1" />
+
+    <input
+      type="file"
+      ref="input1"
+      style="display: none"
+      @change="previewImage"
+      accept="image/*"
+    />
+
+    <div
+      class="upload-zone"
+      :class="{ 'has-image': img1 }"
+      @click="click1"
+    >
+      <img v-if="img1" class="preview" :src="img1" />
+      <div v-else-if="imageData != null" class="upload-placeholder">
+        <v-progress-circular indeterminate color="primary" size="34"></v-progress-circular>
+        <span class="mt-2">Otpremanje fotografije…</span>
+      </div>
+      <div v-else class="upload-placeholder">
+        <v-icon size="40" color="primary">mdi-camera-plus-outline</v-icon>
+        <span class="mt-2">Izaberi fotografiju deponije</span>
+      </div>
     </div>
-    <v-text-field label="Naziv mjesta" v-model="trash.placeName" />
-    <v-date-picker label="Datum" v-model="trash.date" color="green lighten-1" value=""></v-date-picker>
-    <v-text-field label="Detaljan opis" v-model="trash.description" />
-    <v-checkbox label="Očišćen?" v-model="trash.isCleaned" />
-  
-    <v-btn color="pink" :disabled="!img1" @click="create">Save</v-btn>
+
+    <v-text-field
+      label="Naziv mjesta"
+      v-model="trash.placeName"
+      outlined dense rounded hide-details
+      prepend-inner-icon="mdi-map-marker-outline"
+      class="mt-4"
+    />
+    <v-text-field
+      label="Detaljan opis"
+      v-model="trash.description"
+      outlined dense rounded hide-details
+      prepend-inner-icon="mdi-text"
+      class="mt-3"
+    />
+
+    <div class="picker-label mt-4">Datum</div>
+    <v-date-picker
+      label="Datum"
+      v-model="trash.date"
+      color="primary"
+      full-width
+      class="trash-picker"
+    ></v-date-picker>
+
+    <v-checkbox
+      label="Deponija je očišćena"
+      v-model="trash.isCleaned"
+      color="success"
+      hide-details
+      class="mt-2"
+    />
+
+    <v-btn
+      color="primary"
+      depressed
+      rounded
+      block
+      large
+      class="text-none font-weight-medium mt-5"
+      :disabled="!img1"
+      @click="create"
+    >
+      <v-icon left small>mdi-content-save</v-icon>
+      Sačuvaj deponiju
+    </v-btn>
   </v-card>
 </template>
 
@@ -106,3 +159,64 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.trash-card {
+  padding: 24px;
+  border-radius: 20px !important;
+  background: var(--v-surface-base) !important;
+}
+.trash-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 18px;
+}
+.upload-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  border-radius: 16px;
+  border: 2px dashed rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.05);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.upload-zone:hover {
+  border-color: rgba(16, 185, 129, 0.6);
+  background: rgba(16, 185, 129, 0.09);
+}
+.upload-zone.has-image {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #0b1220;
+}
+.preview {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+}
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+.picker-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+.trash-picker {
+  border-radius: 14px;
+  overflow: hidden;
+}
+</style>

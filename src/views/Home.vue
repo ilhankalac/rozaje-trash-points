@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <v-row style="background-color:#2c3e50">
-      <v-col md="8" cols="12" xs="12">
+  <div class="home">
+    <v-row no-gutters class="home-row">
+      <v-col md="8" cols="12" class="map-col">
         <GeoLocation
           :openDialog="openDialog"
           msg="Welcome to Your Vue.js App"
         />
       </v-col>
-      <v-col>
-        <ListOfPoints style="max-width: 100%"></ListOfPoints>
+      <v-col md="4" cols="12" class="list-col">
+        <ListOfPoints></ListOfPoints>
       </v-col>
     </v-row>
   </div>
@@ -34,30 +34,19 @@ export default {
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  background-color: #2c3e50;
+<style scoped>
+.home {
+  min-height: calc(100vh - 72px);
 }
-.topnav {
-  background-color: #486684;
-  overflow: hidden;
-  height: 80px;
-  position: relative;
+
+.list-col {
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
 }
-.topNavH {
-  color: white;
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-body::-webkit-scrollbar {
-  display: none;
+
+@media (max-width: 959px) {
+  .list-col {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
 }
 </style>
