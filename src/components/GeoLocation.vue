@@ -4,9 +4,11 @@
         class="leaflet-canvas"
         :zoom="zoom"
         :center="center"
+        :options="{ zoomControl: false }"
         @click="addMarker"
-        :style="$vuetify.breakpoint.smAndDown ? 'height: 460px' : 'height: calc(100vh - 72px)'"
+        style="height: 100%"
     >
+        <l-control-zoom position="topright"></l-control-zoom>
         <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
         <l-marker v-for="item in $store.state.markerLatLng" :lat-lng="[item.coords.latitude, item.coords.longitude]" :key="item.key">
             <l-popup>
@@ -44,31 +46,16 @@
         </l-marker>
     </l-map>
 
-    <div class="stat-panel" v-if="$store.state.markerLatLng">
-        <div class="stat-tile total">
-            <span class="stat-value">{{$store.state.markerLatLng.length}}</span>
-            <span class="stat-label">Ukupno</span>
-        </div>
-        <div class="stat-tile dirty">
-            <span class="stat-dot"></span>
-            <div class="stat-meta">
-                <span class="stat-value">{{$store.state.markerLatLng.filter(item => !item.isCleaned).length}}</span>
-                <span class="stat-label">Nesređene</span>
-            </div>
-        </div>
-        <div class="stat-tile clean">
-            <span class="stat-dot"></span>
-            <div class="stat-meta">
-                <span class="stat-value">{{$store.state.markerLatLng.filter(item => item.isCleaned).length}}</span>
-                <span class="stat-label">Sređene</span>
-            </div>
-        </div>
+    <div class="map-hud">SEKTOR IBAR · zoom {{ zoom }}</div>
+
+    <div class="map-legend">
+        <span><span class="lg-dot" style="background:#D9764E"></span>Nesređeno</span>
+        <span><span class="lg-dot" style="background:#93C34D"></span>Očišćeno</span>
     </div>
 
-    <v-chip v-if="$store.state.user" class="map-hint" color="primary" small label>
-        <v-icon left x-small>mdi-gesture-tap</v-icon>
-        Klikni na mapu da dodaš deponiju
-    </v-chip>
+    <button v-if="$store.state.user" class="map-fab" @click="addAtCenter" title="Prijavi deponiju na centru mape">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#0c1c07" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
 
     <v-dialog v-model="dialog" width="520px" :key="Math.random()">
         <TrashContainer @saveData="saveData($event)"/>
@@ -82,7 +69,7 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup, LControlZoom } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -105,7 +92,8 @@ export default {
         LMarker,
         LPopup,
         TrashContainer,
-        LIcon
+        LIcon,
+        LControlZoom
     },
     data() {
         return {
@@ -150,8 +138,18 @@ export default {
             if (!this.$store.state.user) return;
 
             this.selectedCoords = {
-                latitude: event.latlng.lat, 
+                latitude: event.latlng.lat,
                 longitude: event.latlng.lng
+            }
+
+            this.dialog = true;
+        },
+        addAtCenter() {
+            if (!this.$store.state.user) return;
+
+            this.selectedCoords = {
+                latitude: this.center[0],
+                longitude: this.center[1]
             }
 
             this.dialog = true;
@@ -218,75 +216,71 @@ export default {
 .map-wrapper {
     position: relative;
     width: 100%;
+    height: 100%;
 }
 .leaflet-canvas {
     width: 100%;
+    height: 100%;
     z-index: 1;
 }
 
-/* Floating glass stats */
-.stat-panel {
+/* Coordinate HUD */
+.map-hud {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 500;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
-    width: 180px;
-    border-radius: 16px;
-    background: rgba(15, 23, 42, 0.82);
-    backdrop-filter: saturate(160%) blur(12px);
-    -webkit-backdrop-filter: saturate(160%) blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    top: 14px;
+    left: 14px;
+    z-index: 600;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: rgba(18, 32, 25, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 10px;
+    letter-spacing: 0.04em;
 }
-.stat-tile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 12px;
-}
-.stat-tile.total {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(20, 184, 166, 0.12));
-    border: 1px solid rgba(16, 185, 129, 0.3);
-}
-.stat-tile.dirty { background: rgba(244, 63, 94, 0.10); }
-.stat-tile.clean { background: rgba(34, 197, 94, 0.10); }
-.stat-meta { display: flex; flex-direction: column; line-height: 1.1; }
-.stat-value {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #f8fafc;
-}
-.stat-tile.total .stat-value { font-size: 1.7rem; }
-.stat-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    color: #94a3b8;
-}
-.stat-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-.stat-tile.dirty .stat-dot { background: #f43f5e; box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.15); }
-.stat-tile.clean .stat-dot { background: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
 
-.map-hint {
+/* Legend */
+.map-legend {
     position: absolute;
-    left: 16px;
-    bottom: 26px;
-    z-index: 500;
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    bottom: 14px;
+    left: 14px;
+    z-index: 600;
+    display: flex;
+    gap: 14px;
+    background: rgba(18, 32, 25, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--ink-soft);
 }
+.map-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.map-legend .lg-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+/* Add FAB */
+.map-fab {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 600;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: var(--moss);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 12px 28px -6px rgba(147, 195, 77, 0.6);
+    transition: transform 0.14s ease;
+}
+.map-fab:hover { transform: translateY(-2px) scale(1.03); }
+.map-fab:focus-visible { outline: 2px solid var(--river); outline-offset: 2px; }
 
 /* Marker popup */
 .marker-popup { min-width: 200px; }

@@ -1,291 +1,313 @@
 <template>
-    <div class="points-panel">
-        <div class="panel-header">
-            <div class="panel-heading">
-                <v-icon small color="primary" class="mr-2">mdi-format-list-bulleted</v-icon>
-                <span>Lista deponija</span>
-                <v-chip v-if="$store.state.markerLatLng" x-small class="ml-2" color="rgba(255,255,255,0.08)">
-                    {{ $store.state.markerLatLng.length }}
-                </v-chip>
-            </div>
-            <div class="search-row">
-                <v-text-field
-                    v-model="search.global"
-                    @keyup="filter(false)"
-                    clearable
-                    @click:clear="filter(true)"
-                    dark
-                    dense
-                    hide-details
-                    outlined
-                    rounded
-                    placeholder="Pretraži po nazivu mjesta"
-                    prepend-inner-icon="mdi-magnify"
-                ></v-text-field>
-                <v-btn
-                    icon
-                    class="filter-btn"
-                    :color="showPanel ? 'primary' : ''"
-                    @click="openAndClosePanel(0)"
-                >
-                    <v-icon>mdi-filter-variant</v-icon>
-                </v-btn>
-            </div>
+  <div class="points-panel">
+    <div class="panel-header">
+      <div class="ph-top">
+        <span class="ph-title">Deponije</span>
+        <span class="ph-count">{{ visibleCount }} / {{ counts.all }}</span>
+      </div>
+
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input
+          type="text"
+          v-model="search.global"
+          @input="applyFilters"
+          placeholder="Pretraži po naselju…"
+        />
+        <button v-if="search.global" class="search-clear" @click="clearSearch" aria-label="Očisti pretragu">×</button>
+      </div>
+
+      <div class="chips">
+        <button class="chip all" :aria-pressed="statusFilter === 'all'" @click="setStatus('all')">Sve · {{ counts.all }}</button>
+        <button class="chip dirty" :aria-pressed="statusFilter === 'dirty'" @click="setStatus('dirty')">
+          <span class="dot" style="background:var(--rust)"></span>Nesređeno · {{ counts.dirty }}
+        </button>
+        <button class="chip clean" :aria-pressed="statusFilter === 'clean'" @click="setStatus('clean')">
+          <span class="dot" style="background:var(--moss)"></span>Očišćeno · {{ counts.clean }}
+        </button>
+        <button class="chip icon" :aria-pressed="showDate" @click="showDate = !showDate" aria-label="Filter po datumu">
+          <v-icon small>mdi-calendar-range</v-icon>
+        </button>
+      </div>
+
+      <v-expand-transition>
+        <div v-if="showDate" class="date-panel">
+          <v-date-picker
+            v-model="search.date"
+            range
+            dark
+            no-title
+            full-width
+            color="primary"
+          ></v-date-picker>
+          <div class="date-actions">
+            <button class="mini-btn primary" @click="applyDate">Primijeni</button>
+            <button class="mini-btn" @click="clearDate">Reset</button>
+          </div>
         </div>
-
-        <v-expand-transition>
-            <div v-if="showPanel" class="filter-card">
-                <h4 class="filter-title">
-                    <v-icon small color="primary" class="mr-1">mdi-calendar-range</v-icon>
-                    Pretraga po datumu
-                </h4>
-                <v-date-picker
-                    v-model="search.date"
-                    clearable
-                    dark
-                    full-width
-                    color="primary"
-                    :range="true"
-                ></v-date-picker>
-                <v-btn color="primary" depressed rounded block class="mt-3 text-none" @click="createReport">
-                    <v-icon left small>mdi-magnify</v-icon> Pretraži
-                </v-btn>
-            </div>
-        </v-expand-transition>
-
-        <div class="list-scroll">
-            <div v-if="$store.state.markerLatLng === undefined" class="loading-state">
-                <v-progress-circular indeterminate :size="46" color="primary"></v-progress-circular>
-                <span class="mt-3">Učitavanje deponija…</span>
-            </div>
-
-            <div
-                v-else-if="$store.state.markerLatLng.length === 0"
-                class="empty-state"
-            >
-                <v-icon size="42" color="#475569">mdi-map-marker-off-outline</v-icon>
-                <span class="mt-2">Nema rezultata</span>
-            </div>
-
-            <v-timeline
-                v-else
-                dense
-                dark
-            >
-                <v-timeline-item
-                    v-for="item in $store.state.markerLatLng"
-                    :key="item.key"
-                    small
-                    fill-dot
-                    :color="item.isCleaned ? 'success' : 'error'"
-                    @click.native="selectItem(item)"
-                >
-                    <div class="point-card">
-                        <div class="point-name">{{ item.placeName.toUpperCase() }}</div>
-                        <div class="point-meta">
-                            <span class="point-status" :class="item.isCleaned ? 'is-clean' : 'is-dirty'">
-                                {{ item.isCleaned ? 'Očišćeno' : 'Nesređeno' }}
-                            </span>
-                            <span class="point-date">
-                                <v-icon x-small color="#64748b">mdi-calendar</v-icon>
-                                {{ item.date | formatDate }}
-                            </span>
-                        </div>
-                    </div>
-                </v-timeline-item>
-            </v-timeline>
-        </div>
+      </v-expand-transition>
     </div>
+
+    <div class="list-scroll">
+      <div v-if="$store.state.markerLatLng === undefined" class="state">
+        <v-progress-circular indeterminate :size="42" color="primary"></v-progress-circular>
+        <span>Učitavanje deponija…</span>
+      </div>
+
+      <div v-else-if="visibleList.length === 0" class="state">
+        <v-icon size="40" color="#6E8177">mdi-map-marker-off-outline</v-icon>
+        <span>Nema rezultata</span>
+      </div>
+
+      <div
+        v-else
+        v-for="item in visibleList"
+        :key="item['.key'] || item.key"
+        class="card"
+        @click="selectItem(item)"
+      >
+        <div
+          class="thumb"
+          :style="item.post && item.post.photo ? { backgroundImage: 'url(' + item.post.photo + ')' } : {}"
+        >
+          <span v-if="!(item.post && item.post.photo)" class="thumb-ph">
+            <v-icon small color="#6E8177">mdi-image-off-outline</v-icon>
+          </span>
+        </div>
+        <div class="meta">
+          <div class="name">{{ item.placeName }}</div>
+          <div class="coord" v-if="item.coords">◈ {{ fmtCoord(item.coords.latitude) }}, {{ fmtCoord(item.coords.longitude) }}</div>
+          <div class="row">
+            <span class="pill" :class="item.isCleaned ? 'clean' : 'dirty'">{{ item.isCleaned ? 'Očišćeno' : 'Nesređeno' }}</span>
+            <span class="date">{{ item.date | formatDate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { landfillPointsRef } from '../firebase/firebase';
-import {eventBus} from "../main.js";
+import { eventBus } from "../main.js";
 import moment from 'moment'
 
 export default {
-    data() {
+  data() {
+    return {
+      markerLatLng: [],
+      statusFilter: 'all',
+      showDate: false,
+      dateRange: null,
+      search: {
+        global: "",
+        date: [],
+      },
+    };
+  },
+  firebase: {
+    markerLatLng: landfillPointsRef
+  },
+  computed: {
+    counts() {
+      const b = Array.isArray(this.markerLatLng) ? this.markerLatLng : [];
       return {
-          markerLatLng: [],
-          tempMarkerLatLng: [],
-          openedPanel: null,
-          showPanel: false,
-          search: {
-            global: "",
-            placeName: "",
-            description: "",
-            date: [new Date().toISOString().substr(0, 10)],
-          },
+        all: b.length,
+        dirty: b.filter((e) => !e.isCleaned).length,
+        clean: b.filter((e) => e.isCleaned).length,
       };
     },
-    firebase:{
-        markerLatLng: landfillPointsRef 
+    visibleList() {
+      return Array.isArray(this.$store.state.markerLatLng) ? this.$store.state.markerLatLng : [];
     },
-    created(){
-      this.tempMarkerLatLng = this.markerLatLng;
+    visibleCount() {
+      return this.visibleList.length;
     },
-    methods:{
-      selectItem(item){
-        this.$store.state.selectedPoint = item;
-        eventBus.$emit('fireMethod');
-      },
-      filter(clear = false){
-        clear ? this.search.global = "" : null;
-        this.$store.state.markerLatLng  = this.tempMarkerLatLng.filter(element => element.placeName.toLowerCase().includes(this.search.global.toLowerCase()))
-      },
-      openAndClosePanel (index) {
-        this.showPanel = !this.showPanel;
-        this.openedPanel = this.openedPanel === null ? index : null;
-      },
-      createReport(){
-        let date1, date2;
+  },
+  methods: {
+    selectItem(item) {
+      this.$store.state.selectedPoint = item;
+      eventBus.$emit('fireMethod');
+    },
+    fmtCoord(v) {
+      return (typeof v === 'number' ? v : parseFloat(v) || 0).toFixed(3);
+    },
+    setStatus(s) {
+      this.statusFilter = s;
+      this.applyFilters();
+    },
+    clearSearch() {
+      this.search.global = "";
+      this.applyFilters();
+    },
+    applyDate() {
+      const d = this.search.date;
+      if (d && d.length) {
+        const vals = d.map((x) => moment(x).valueOf()).sort((a, b) => a - b);
+        this.dateRange = [vals[0], vals[vals.length - 1]];
+      } else {
+        this.dateRange = null;
+      }
+      this.applyFilters();
+    },
+    clearDate() {
+      this.search.date = [];
+      this.dateRange = null;
+      this.applyFilters();
+    },
+    applyFilters() {
+      const base = Array.isArray(this.markerLatLng) ? this.markerLatLng : [];
+      let res = base.slice();
 
+      if (this.statusFilter === 'dirty') res = res.filter((e) => !e.isCleaned);
+      else if (this.statusFilter === 'clean') res = res.filter((e) => e.isCleaned);
 
-        console.log(this.search.date);
-        [date1, date2] = this.search.date;
+      const q = (this.search.global || "").trim().toLowerCase();
+      if (q) res = res.filter((e) => e.placeName && e.placeName.toLowerCase().includes(q));
 
+      if (this.dateRange && this.dateRange.length === 2) {
+        res = res.filter((e) => e.date >= this.dateRange[0] && e.date <= this.dateRange[1]);
+      }
 
-        date1 = moment(date1).valueOf();
-
-        if(date2)
-          date2 = moment(date2).valueOf();
-        else 
-          date2 = date1;
-
-        let temp;
-        
-        if(date1 < date2){
-          temp = date1;
-          date1 = date2;
-          date2 = temp;
-        }
-        // Filtering array by date range
-        this.$store.state.markerLatLng = this.tempMarkerLatLng.filter(element => element.date <= date1 && element.date >= date2)
-  
-      },
-    }
-}
+      this.$store.state.markerLatLng = res;
+    },
+  },
+};
 </script>
 
 <style scoped>
 .points-panel {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 72px);
-    background: var(--v-surface-base);
-    color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface);
+  color: var(--ink);
 }
 
+/* header */
 .panel-header {
-    padding: 16px 16px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--line);
 }
-.panel-heading {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: #f1f5f9;
-    margin-bottom: 12px;
+.ph-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
-.search-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.filter-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    flex-shrink: 0;
-}
+.ph-title { font-family: var(--font-grotesk); font-weight: 800; letter-spacing: -0.01em; font-size: 15px; color: var(--ink); }
+.ph-count { font-family: var(--font-mono); font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 
-.filter-card {
-    margin: 12px 16px 4px;
-    padding: 16px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: var(--ink-faint);
 }
-.filter-title {
-    display: flex;
-    align-items: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #cbd5e1;
-    margin-bottom: 10px;
+.search svg { width: 16px; height: 16px; flex: none; }
+.search input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
 }
+.search input::placeholder { color: var(--ink-faint); }
+.search-clear { background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 2px; }
+.search-clear:hover { color: var(--ink); }
 
-.list-scroll {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 8px 4px 24px;
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.chip {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 6px 11px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.14s ease;
 }
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+.chip.icon { padding: 6px 9px; }
+.chip[aria-pressed="true"] { border-color: transparent; }
+.chip.all[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.chip.dirty[aria-pressed="true"] { background: var(--rust); color: #fff; }
+.chip.clean[aria-pressed="true"] { background: var(--moss); color: #0c1c07; }
+.chip.icon[aria-pressed="true"] { background: var(--surface-2); border-color: var(--moss); color: var(--moss); }
+.chip:focus-visible { outline: 2px solid var(--river); outline-offset: 2px; }
 
-.loading-state,
-.empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    color: #94a3b8;
-    font-size: 0.9rem;
+.date-panel { margin-top: 10px; }
+.date-actions { display: flex; gap: 8px; margin-top: 8px; }
+.mini-btn {
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 9px;
+  padding: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
 }
+.mini-btn.primary { background: var(--moss); color: #0c1c07; border-color: transparent; }
 
-.point-card {
-    padding: 10px 14px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
-}
-.point-card:hover {
-    background: rgba(16, 185, 129, 0.08);
-    border-color: rgba(16, 185, 129, 0.28);
-    transform: translateX(2px);
-}
-.point-name {
-    text-align: left;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #f1f5f9;
-    margin-bottom: 4px;
-}
-.point-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.point-status {
-    font-size: 0.62rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    padding: 2px 8px;
-    border-radius: 999px;
-}
-.point-status.is-clean { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
-.point-status.is-dirty { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
-.point-date {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    font-size: 0.75rem;
-    color: #94a3b8;
-}
+/* list */
+.list-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 6px; }
+.state { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 54px 20px; color: var(--ink-faint); font-size: 0.9rem; }
 
-.points-panel >>> .v-timeline-item {
-    cursor: pointer;
-    padding-bottom: 14px;
+.card {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.14s ease;
 }
+.card:hover { background: var(--surface-2); }
+.thumb {
+  width: 62px;
+  height: 62px;
+  border-radius: 10px;
+  flex: none;
+  background-color: var(--surface-2);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
+  position: relative;
+}
+.thumb-ph { position: absolute; inset: 0; display: grid; place-items: center; }
+.meta { min-width: 0; flex: 1; }
+.name { font-family: var(--font-grotesk); font-weight: 700; font-size: 14.5px; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.coord { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); margin-top: 2px; letter-spacing: 0.02em; }
+.row { display: flex; align-items: center; gap: 8px; margin-top: 7px; flex-wrap: wrap; }
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.pill.dirty { background: rgba(217, 118, 78, 0.16); color: var(--rust-deep); }
+.pill.clean { background: rgba(147, 195, 77, 0.18); color: var(--moss-deep); }
+.date { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); }
 
-/* Slim modern scrollbar */
 .list-scroll::-webkit-scrollbar { width: 8px; }
 .list-scroll::-webkit-scrollbar-track { background: transparent; }
-.list-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-}
-.list-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); }
+.list-scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
+.list-scroll::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
 </style>

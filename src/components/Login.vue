@@ -76,7 +76,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 72px);
+    min-height: calc(100vh - 64px);
     padding: 24px;
 }
 .login-container {
@@ -85,11 +85,11 @@ export default {
     padding: 36px 32px 32px;
     border-radius: 22px !important;
     text-align: center;
-    background: rgba(21, 30, 46, 0.85) !important;
+    background: rgba(18, 32, 25, 0.9) !important;
     backdrop-filter: saturate(160%) blur(14px);
     -webkit-backdrop-filter: saturate(160%) blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45) !important;
+    border: 1px solid var(--line, rgba(255, 255, 255, 0.08));
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5) !important;
 }
 .login-logo {
     width: 68px;
@@ -99,18 +99,18 @@ export default {
     align-items: center;
     justify-content: center;
     border-radius: 20px;
-    background: linear-gradient(135deg, #10b981, #14b8a6);
-    box-shadow: 0 12px 28px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #93C34D, #1C4A36);
+    box-shadow: 0 12px 28px rgba(147, 195, 77, 0.4);
 }
 .login-title {
     font-size: 1.5rem;
     font-weight: 800;
-    color: #f8fafc;
+    color: var(--ink, #f8fafc);
     margin-bottom: 4px;
 }
 .login-subtitle {
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: var(--ink-soft, #94a3b8);
     margin-bottom: 22px;
 }
 .login-error {

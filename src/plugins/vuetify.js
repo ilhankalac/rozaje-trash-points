@@ -11,15 +11,15 @@ export default new Vuetify({
     },
     themes: {
       dark: {
-        primary: '#10b981',   // emerald
-        secondary: '#14b8a6', // teal
-        accent: '#34d399',
-        info: '#38bdf8',
-        success: '#22c55e',
-        warning: '#f59e0b',
-        error: '#f43f5e',
-        background: '#0b1220',
-        surface: '#151e2e',
+        primary: '#93C34D',   // moss — fresh growth / action
+        secondary: '#4F9DB0', // river — Ibar
+        accent: '#A9D264',
+        info: '#4F9DB0',
+        success: '#93C34D',
+        warning: '#E3B23C',
+        error: '#D9764E',     // rust — nesređeno
+        background: '#0B1712', // deep pine
+        surface: '#122019',
       },
     },
   },

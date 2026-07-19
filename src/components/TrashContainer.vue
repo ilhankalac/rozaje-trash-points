@@ -180,20 +180,20 @@ export default {
   justify-content: center;
   min-height: 180px;
   border-radius: 16px;
-  border: 2px dashed rgba(16, 185, 129, 0.35);
-  background: rgba(16, 185, 129, 0.05);
+  border: 2px dashed rgba(147, 195, 77, 0.4);
+  background: rgba(147, 195, 77, 0.06);
   cursor: pointer;
   overflow: hidden;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 .upload-zone:hover {
-  border-color: rgba(16, 185, 129, 0.6);
-  background: rgba(16, 185, 129, 0.09);
+  border-color: rgba(147, 195, 77, 0.7);
+  background: rgba(147, 195, 77, 0.1);
 }
 .upload-zone.has-image {
   border-style: solid;
-  border-color: rgba(255, 255, 255, 0.08);
-  background: #0b1220;
+  border-color: var(--line, rgba(255, 255, 255, 0.08));
+  background: #0b1712;
 }
 .preview {
   width: 100%;
