@@ -117,9 +117,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Readable selection everywhere — dark text on moss, so green accents stay legible when selected */
-::selection { background: #B6E06A; color: #0c1c07; }
-::-moz-selection { background: #B6E06A; color: #0c1c07; }
+/* Readable selection everywhere — light text on a dark ground, so green accents stay legible when selected */
+::selection { background: #2C4034; color: #F1F6EC; }
+::-moz-selection { background: #2C4034; color: #F1F6EC; }
 
 #app h1, #app h2, #app h3 {
   font-family: var(--font-grotesk);

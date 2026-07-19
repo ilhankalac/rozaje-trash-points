@@ -66,13 +66,18 @@
         class="card"
         @click="selectItem(item)"
       >
-        <div
-          class="thumb"
-          :style="item.post && item.post.photo ? { backgroundImage: 'url(' + item.post.photo + ')' } : {}"
-        >
-          <span v-if="!(item.post && item.post.photo)" class="thumb-ph">
+        <div class="thumb">
+          <span class="thumb-ph">
             <v-icon small color="#6E8177">mdi-image-off-outline</v-icon>
           </span>
+          <img
+            v-if="item.post && item.post.photo"
+            class="thumb-img"
+            :src="item.post.photo"
+            alt="Fotografija deponije"
+            loading="lazy"
+            @error="hideImg"
+          />
         </div>
         <div class="meta">
           <div class="name">{{ item.placeName }}</div>
@@ -131,6 +136,9 @@ export default {
     },
     fmtCoord(v) {
       return (typeof v === 'number' ? v : parseFloat(v) || 0).toFixed(3);
+    },
+    hideImg(e) {
+      e.target.style.display = "none";
     },
     setStatus(s) {
       this.statusFilter = s;
@@ -283,12 +291,12 @@ export default {
   border-radius: 10px;
   flex: none;
   background-color: var(--surface-2);
-  background-size: cover;
-  background-position: center;
   border: 1px solid var(--line);
   position: relative;
+  overflow: hidden;
 }
 .thumb-ph { position: absolute; inset: 0; display: grid; place-items: center; }
+.thumb-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .meta { min-width: 0; flex: 1; }
 .name { font-family: var(--font-grotesk); font-weight: 700; font-size: 14.5px; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .coord { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); margin-top: 2px; letter-spacing: 0.02em; }

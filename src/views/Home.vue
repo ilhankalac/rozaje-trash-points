@@ -379,9 +379,19 @@ export default {
 /* ---------- hero ---------- */
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
 .topo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--paper) 0%, rgba(11, 23, 18, 0.80) 46%, rgba(11, 23, 18, 0.20) 100%),
+    linear-gradient(0deg, var(--paper) 0%, rgba(11, 23, 18, 0.15) 40%, transparent 75%);
+}
 .hero-inner { position: relative; z-index: 2; padding: 76px 22px 60px; }
 .hero-title { font-size: clamp(2.2rem, 5.5vw, 4rem); line-height: 1.03; max-width: 16ch; text-wrap: balance; }
-.hero-title .accent { color: #B6E06A; }
+.hero-title .accent { color: black; }
 .hero-lead { margin: 20px 0 28px; font-size: clamp(1.02rem, 2vw, 1.2rem); color: var(--ink-soft); max-width: 54ch; line-height: 1.6; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
 .hero-btn { font-size: 14.5px; padding: 12px 18px; }
